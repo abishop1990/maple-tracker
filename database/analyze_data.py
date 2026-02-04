@@ -27,7 +27,8 @@ def plot_kitty_data(daily_summary: pd.DataFrame, save_dir: str | Path | None = N
     std_intake = daily_summary["Drink_g"].std()
     plt.axhline(y=avg_intake, color="#E74C3C", linestyle="--", label=f"Average: {avg_intake:.2f}g", linewidth=2)
     plt.axhline(y=median_intake, color="#27AE60", linestyle=":", label=f"Median: {median_intake:.2f}g", linewidth=2)
-    plt.axhspan(avg_intake - std_intake, avg_intake + std_intake, alpha=0.15, color="black", label=f"±1 Std Dev ({std_intake:.1f}g)")
+    plt.axhspan(avg_intake - std_intake, avg_intake + std_intake, alpha=0.15, color="black",
+                label=f"±1 Std Dev ({std_intake:.1f}g)")
 
     plt.title(f"{cat_name.capitalize()} Daily Water Intake", fontsize=16, fontweight="bold", pad=15)
     plt.xlabel("Date (Day/Month)", fontsize=11)

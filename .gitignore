@@ -242,13 +242,5 @@ cython_debug/
 .vs
 
 # Python generated files and user files
-*.MP4
-*.mp4
-*.stats
-*.gif
-logs/
-results/
 .ruff_cache
 output/
-output-images/
-
