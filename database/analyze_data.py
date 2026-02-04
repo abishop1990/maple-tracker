@@ -27,8 +27,13 @@ def plot_kitty_data(daily_summary: pd.DataFrame, save_dir: str | Path | None = N
     std_intake = daily_summary["Drink_g"].std()
     plt.axhline(y=avg_intake, color="#E74C3C", linestyle="--", label=f"Average: {avg_intake:.2f}g", linewidth=2)
     plt.axhline(y=median_intake, color="#27AE60", linestyle=":", label=f"Median: {median_intake:.2f}g", linewidth=2)
-    plt.axhspan(avg_intake - std_intake, avg_intake + std_intake, alpha=0.15, color="black",
-                label=f"±1 Std Dev ({std_intake:.1f}g)")
+    plt.axhspan(
+        avg_intake - std_intake,
+        avg_intake + std_intake,
+        alpha=0.15,
+        color="black",
+        label=f"±1 Std Dev ({std_intake:.1f}g)",
+    )
 
     plt.title(f"{cat_name.capitalize()} Daily Water Intake", fontsize=16, fontweight="bold", pad=15)
     plt.xlabel("Date (Day/Month)", fontsize=11)
@@ -40,8 +45,13 @@ def plot_kitty_data(daily_summary: pd.DataFrame, save_dir: str | Path | None = N
     for bar in bars:
         height = bar.get_height()
         plt.text(
-            bar.get_x() + bar.get_width() / 2., height, f"{int(height)}g",
-            ha="center", va="bottom", fontsize=9, fontweight="bold"
+            bar.get_x() + bar.get_width() / 2.0,
+            height,
+            f"{int(height)}g",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            fontweight="bold",
         )
 
     plt.tight_layout()
@@ -87,7 +97,7 @@ def plot_time_pie_chart(df: pd.DataFrame, save_dir: str | Path | None = None, ca
         startangle=90,
         explode=[0.02] * len(values),
         shadow=True,
-        textprops={"fontsize": 10}
+        textprops={"fontsize": 10},
     )
 
     for autotext in autotexts:
@@ -97,8 +107,15 @@ def plot_time_pie_chart(df: pd.DataFrame, save_dir: str | Path | None = None, ca
     ax.set_title(f"{cat_name.capitalize()} Drinking Pattern by Time of Day", fontsize=14, fontweight="bold", pad=20)
 
     total = sum(values)
-    fig.text(0.5, 0.02, f"Total tracked: {int(total)}g over {len(df)} measurements",
-             ha="center", fontsize=9, color="gray", style="italic")
+    fig.text(
+        0.5,
+        0.02,
+        f"Total tracked: {int(total)}g over {len(df)} measurements",
+        ha="center",
+        fontsize=9,
+        color="gray",
+        style="italic",
+    )
 
     plt.tight_layout()
     if save_dir is not None:
@@ -106,7 +123,9 @@ def plot_time_pie_chart(df: pd.DataFrame, save_dir: str | Path | None = None, ca
         save_dir.mkdir(parents=True, exist_ok=True)
         plt.savefig(
             save_dir / f"{cat_name.lower()}-drinking-pattern-time-of-day.png",
-            dpi=150, facecolor="white", bbox_inches="tight"
+            dpi=150,
+            facecolor="white",
+            bbox_inches="tight",
         )
     plt.show()
 

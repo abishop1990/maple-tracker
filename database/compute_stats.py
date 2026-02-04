@@ -1,18 +1,14 @@
 import sqlite3
 
 
-def calculate_drink_amount(
-        current_water_weight: int,
-        prev_entry: sqlite3.Row | None,
-        bowl_weight: int
-) -> int:
+def calculate_drink_amount(current_water_weight: int, prev_entry: sqlite3.Row | None, bowl_weight: int) -> int:
     """Calculate how much water was drunk since the previous entry."""
     if prev_entry is None:
         return 0
 
-    prev_water = prev_entry['water_weight']
-    if prev_entry['refill_to']:
-        prev_water = prev_entry['refill_to'] - bowl_weight
+    prev_water = prev_entry["water_weight"]
+    if prev_entry["refill_to"]:
+        prev_water = prev_entry["refill_to"] - bowl_weight
 
     return max(0, prev_water - current_water_weight)
 
@@ -28,12 +24,7 @@ def compute_daily_totals(entries: list[dict]) -> dict[str, int]:
 
 def compute_time_of_day_breakdown(entries: list[dict]) -> dict[str, int]:
     """Compute drinking totals by time of day."""
-    periods = {
-        "Morning (5-12)": 0,
-        "Afternoon (12-18)": 0,
-        "Evening (18-23)": 0,
-        "Night (23-5)": 0
-    }
+    periods = {"Morning (5-12)": 0, "Afternoon (12-18)": 0, "Evening (18-23)": 0, "Night (23-5)": 0}
 
     for entry in entries:
         try:
@@ -64,5 +55,5 @@ def compute_summary_stats(daily_totals: dict[str, int]) -> dict:
         "total_days": len(daily_values),
         "total_intake": sum(daily_values),
         "max_day": max(daily_values),
-        "min_day": min(daily_values)
+        "min_day": min(daily_values),
     }

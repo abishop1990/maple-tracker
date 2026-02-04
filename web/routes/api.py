@@ -1,8 +1,17 @@
 from flask import Blueprint, request, jsonify, g
 
 from database.db_operations import update_bowl_weight as db_update_bowl_weight, read_all_entries, SortOrder
-from web.services.entry_service import EntryInput, EntryUpdateInput, create_entry, update_entry, delete_entry, \
-    get_entry, get_all_entries, ValidationError, NotFoundError
+from web.services.entry_service import (
+    EntryInput,
+    EntryUpdateInput,
+    create_entry,
+    update_entry,
+    delete_entry,
+    get_entry,
+    get_all_entries,
+    ValidationError,
+    NotFoundError,
+)
 from web.services.import_service import import_raw_text
 from web.services.stats_service import compute_stats
 
@@ -40,12 +49,14 @@ def add_entry():
         entry_input = EntryInput.from_dict(request.json)
         result = create_entry(g.db, entry_input)
 
-        return jsonify({
-            "success": True,
-            "id": result.id,
-            "drink": result.drink,
-            "water_weight": result.water_weight,
-        })
+        return jsonify(
+            {
+                "success": True,
+                "id": result.id,
+                "drink": result.drink,
+                "water_weight": result.water_weight,
+            }
+        )
     except ValidationError as e:
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception:
@@ -65,19 +76,21 @@ def update_entry_endpoint(entry_id: int):
         update_input = EntryUpdateInput.from_dict(request.json)
         result = update_entry(g.db, entry_id, update_input)
 
-        return jsonify({
-            "success": True,
-            "entry": {
-                "id": result.id,
-                "date": result.date,
-                "time": result.time,
-                "total_weight": result.total_weight,
-                "water_weight": result.water_weight,
-                "drink": result.drink,
-                "refill_to": result.refill_to,
-                "notes": result.notes,
+        return jsonify(
+            {
+                "success": True,
+                "entry": {
+                    "id": result.id,
+                    "date": result.date,
+                    "time": result.time,
+                    "total_weight": result.total_weight,
+                    "water_weight": result.water_weight,
+                    "drink": result.drink,
+                    "refill_to": result.refill_to,
+                    "notes": result.notes,
+                },
             }
-        })
+        )
     except NotFoundError as e:
         return jsonify({"success": False, "error": str(e)}), 404
     except ValidationError as e:
@@ -118,10 +131,9 @@ def update_bowl_weight():
         return jsonify({"success": False, "error": "bowl_weight must be a number"}), 400
 
     if not min_bowl_weight <= new_weight <= max_bowl_weight:
-        return jsonify({
-            "success": False,
-            "error": f"bowl_weight must be between {min_bowl_weight} and {max_bowl_weight} grams"
-        }), 400
+        return jsonify(
+            {"success": False, "error": f"bowl_weight must be between {min_bowl_weight} and {max_bowl_weight} grams"}
+        ), 400
 
     try:
         db_update_bowl_weight(g.db, new_weight)

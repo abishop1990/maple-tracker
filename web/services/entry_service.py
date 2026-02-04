@@ -12,7 +12,8 @@ from database.db_operations import (
     create_entry as db_create_entry,
     update_entry_by_id as db_update_entry,
     delete_entry_by_id as db_delete_entry,
-    read_all_entries, SortOrder,
+    read_all_entries,
+    SortOrder,
 )
 
 
@@ -25,11 +26,13 @@ class NotFoundError(Exception):
     """Raised when a requested resource is not found."""
     pass
 
+
 @dataclass
 class EntryValidatorBase:
     """Shared constants and validation logic."""
+
     MIN_WEIGHT = 0
-    MAX_WEIGHT = 5000 # 5kg should cover any cat bowl
+    MAX_WEIGHT = 5000  # 5kg should cover any cat bowl
     MAX_NOTES_LENGTH = 500
 
     @classmethod
@@ -101,9 +104,11 @@ class EntryValidatorBase:
             raise ValidationError(f"notes must be {cls.MAX_NOTES_LENGTH} characters or less")
         return value.strip()
 
+
 @dataclass
 class EntryInput(EntryValidatorBase):
     """Validated input for creating an entry."""
+
     total_weight: int
     date: str | None = None
     time: str | None = None
@@ -139,6 +144,7 @@ class EntryInput(EntryValidatorBase):
 @dataclass
 class EntryUpdateInput(EntryValidatorBase):
     """Validated input for updating an entry."""
+
     total_weight: int | None = None
     date: str | None = None
     time: str | None = None
@@ -169,26 +175,31 @@ class EntryUpdateInput(EntryValidatorBase):
 
     def has_updates(self) -> bool:
         """Check if any field has an update value."""
-        return any([
-            self.total_weight is not None,
-            self.date is not None,
-            self.time is not None,
-            self.drink is not None,
-            self.refill_to is not None,
-            self.notes is not None,
-        ])
+        return any(
+            [
+                self.total_weight is not None,
+                self.date is not None,
+                self.time is not None,
+                self.drink is not None,
+                self.refill_to is not None,
+                self.notes is not None,
+            ]
+        )
 
 
 @dataclass
 class EntryResult:
     """Result of creating an entry."""
+
     id: int
     drink: int
     water_weight: int
 
+
 @dataclass
 class EntryUpdateResult:
     """Result of updating an entry."""
+
     id: int
     date: str
     time: str
@@ -197,6 +208,7 @@ class EntryUpdateResult:
     drink: int
     refill_to: int | None
     notes: str
+
 
 def create_entry(conn: sqlite3.Connection, entry_input: EntryInput) -> EntryResult:
     """
@@ -232,6 +244,7 @@ def create_entry(conn: sqlite3.Connection, entry_input: EntryInput) -> EntryResu
     )
 
     return EntryResult(id=new_id, drink=drink, water_weight=water_weight)
+
 
 def update_entry(conn: sqlite3.Connection, entry_id: int, update_input: EntryUpdateInput) -> EntryUpdateResult:
     """
