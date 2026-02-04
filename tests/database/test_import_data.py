@@ -72,8 +72,8 @@ class TestImportData(unittest.TestCase):
         """Test bulk insertion count."""
         mock_get_sql.return_value = "INSERT INTO entries VALUES (?, ?, ?, ?, ?, ?, ?)"
         df = pd.DataFrame([
-            {"Date": "01/01", "Time": "10:00", "Drink_g": 5},
-            {"Date": "01/01", "Time": "11:00", "Drink_g": 10}
+            {"Date": "2025/01/01", "Time": "10:00", "Drink_g": 5},
+            {"Date": "2025/01/01", "Time": "11:00", "Drink_g": 10}
         ])
         imported = import_to_db(self.conn, df)
         self.assertEqual(imported, 2)

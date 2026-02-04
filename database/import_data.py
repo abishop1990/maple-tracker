@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -8,6 +9,23 @@ from database.path_manager import PathManager
 
 class Defaults:
     BOWL_WEIGHT = 423
+
+
+def normalize_date(date_str: str) -> str:
+    """
+    Converts various date formats (DD/MM/YYYY or YYYY/MM/DD) into the standard sortable YYYY-MM-DD format.
+    """
+    date_str = date_str.strip()
+    date_str = date_str.replace("/", "-")
+    try:
+        return datetime.strptime(date_str, "%d-%m-%Y").strftime("%Y-%m-%d")
+    except ValueError:
+        pass
+
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d").strftime("%Y-%m-%d")
+    except ValueError:
+        return date_str
 
 
 def get_sql_query(filename: str | Path) -> str:
@@ -43,9 +61,10 @@ def import_to_db(conn, df: pd.DataFrame) -> int:
     for row in df.itertuples():
         try:
             refill = int(row.Refill_To_g) if hasattr(row, "Refill_To_g") and not pd.isna(row.Refill_To_g) else None
+            normalized_date = normalize_date(row.Date)
 
             conn.execute(insert_sql, (
-                row.Date,
+                normalized_date,
                 row.Time,
                 getattr(row, "Total_Weight_g", 0),
                 getattr(row, "Water_Weight_g", 0),
@@ -54,7 +73,7 @@ def import_to_db(conn, df: pd.DataFrame) -> int:
                 ""
             ))
             imported += 1
-            print(f"\t{row.Date} {row.Time} - {row.Drink_g}g drink")
+            print(f"\t{normalized_date} {row.Time} - {row.Drink_g}g drink")
         except Exception as e:
             print(f"\t! Error inserting row {row.Index}: {e}")
 

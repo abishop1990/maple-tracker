@@ -1,0 +1,68 @@
+import sqlite3
+
+
+def calculate_drink_amount(
+        current_water_weight: int,
+        prev_entry: sqlite3.Row | None,
+        bowl_weight: int
+) -> int:
+    """Calculate how much water was drunk since the previous entry."""
+    if prev_entry is None:
+        return 0
+
+    prev_water = prev_entry['water_weight']
+    if prev_entry['refill_to']:
+        prev_water = prev_entry['refill_to'] - bowl_weight
+
+    return max(0, prev_water - current_water_weight)
+
+
+def compute_daily_totals(entries: list[dict]) -> dict[str, int]:
+    """Compute daily drinking totals from entries."""
+    daily = {}
+    for entry in entries:
+        date = entry["date"]
+        daily[date] = daily.get(date, 0) + (entry.get("drink") or 0)
+    return daily
+
+
+def compute_time_of_day_breakdown(entries: list[dict]) -> dict[str, int]:
+    """Compute drinking totals by time of day."""
+    periods = {
+        "Morning (5-12)": 0,
+        "Afternoon (12-18)": 0,
+        "Evening (18-23)": 0,
+        "Night (23-5)": 0
+    }
+
+    for entry in entries:
+        try:
+            hour = int(entry["time"].split(":")[0])
+            drink = entry.get("drink") or 0
+            if 5 <= hour < 12:
+                periods["Morning (5-12)"] += drink
+            elif 12 <= hour < 18:
+                periods["Afternoon (12-18)"] += drink
+            elif 18 <= hour < 23:
+                periods["Evening (18-23)"] += drink
+            else:
+                periods["Night (23-5)"] += drink
+        except (ValueError, IndexError):
+            pass
+
+    return periods
+
+
+def compute_summary_stats(daily_totals: dict[str, int]) -> dict:
+    """Compute summary statistics from daily totals."""
+    daily_values = [v for v in daily_totals.values() if v > 0]
+    if not daily_values:
+        return {}
+
+    return {
+        "average": round(sum(daily_values) / len(daily_values), 1),
+        "total_days": len(daily_values),
+        "total_intake": sum(daily_values),
+        "max_day": max(daily_values),
+        "min_day": min(daily_values)
+    }

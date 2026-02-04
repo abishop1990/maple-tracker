@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS settings
 CREATE TABLE IF NOT EXISTS entries
 (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    date         TEXT    NOT NULL,
-    time         TEXT    NOT NULL,
+    date         TEXT    NOT NULL CHECK (date LIKE '____-__-__'),
+    time         TEXT    NOT NULL CHECK (time LIKE '__:__'),
     total_weight INTEGER NOT NULL,
     water_weight INTEGER NOT NULL,
     drink        INTEGER   DEFAULT 0,

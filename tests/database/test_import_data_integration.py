@@ -30,7 +30,7 @@ class TestDatabaseIntegration(unittest.TestCase):
         self.assertEqual(cursor.fetchone()[0], "423")
 
         df = pd.DataFrame([{
-            "Date": "2026-02-04",
+            "Date": "2026/02/25",
             "Time": "08:00",
             "Total_Weight_g": 500,
             "Water_Weight_g": 100,
