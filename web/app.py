@@ -47,6 +47,14 @@ def create_app(database_path: str | None = None) -> Flask:
     return app
 
 
+def main():
+    """Entry point for the maple-tracker CLI command."""
+    db_path = PathManager.MAPLE_DATABASE_PATH
+    application = create_app(database_path=db_path)
+    init_database(database_path=application.config["DATABASE"])
+    application.run(host="0.0.0.0", port=5000, debug=False)
+
+
 if __name__ == "__main__":
     db_path = PathManager.MAPLE_DATABASE_PATH
     application = create_app(database_path=db_path)

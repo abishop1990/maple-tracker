@@ -60,6 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEditFormHandlers();
 });
 
+function escapeHtml(text) {
+  if (text === null || text === undefined) {
+    return '';
+  }
+  return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+}
 
 function iconHtml(name, className = '') {
   const classAttr = className ? ` class="${className}"` : '';
@@ -275,11 +286,11 @@ async function loadEntries() {
     ui.entriesList.innerHTML = reversed.map(e => `
       <div class="entry-item">
         <div class="entry-info">
-          <span class="entry-date">${e.date} ${e.time}</span>
+          <span class="entry-date">${escapeHtml(e.date)} ${escapeHtml(e.time)}</span>
           ${e.refill_to ? `<span class="entry-refill">Refilled</span>` : ''}
           <div class="entry-details">
             Water: ${e.water_weight}g
-            ${e.notes ? ` · ${e.notes}` : ''}
+            ${e.notes ? ` · ${escapeHtml(e.notes)}` : ''}
           </div>
         </div>
         <span class="entry-drink">${e.drink || 0}g</span>
