@@ -24,7 +24,7 @@ def read_bowl_weight(conn: sqlite3.Connection) -> int:
     return int(row['value'] if isinstance(row, sqlite3.Row) else row[0]) if row else Defaults.BOWL_WEIGHT
 
 
-def update_bowl_weight_(conn: sqlite3.Connection, weight: int) -> None:
+def update_bowl_weight(conn: sqlite3.Connection, weight: int) -> None:
     """Update the bowl weight in settings."""
     conn.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('bowl_weight', ?)", (str(weight),))
     conn.commit()

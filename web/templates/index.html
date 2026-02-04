@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maple Water Tracker</title>
+
+  <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}" sizes="96x96"/>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon/favicon.svg') }}"/>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}"/>
+  <meta name="apple-mobile-web-app-title" content="maple-tracker"/>
+  <link rel="manifest" href="{{ url_for('static', filename='favicon/site.webmanifest') }}"/>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<script>window.ICONS_PATH = "{{ url_for('static', filename='images/icons.svg') }}";</script>
+
+<header>
+  <h1>
+    <img class="icon icon-cat" src="{{ url_for('static', filename='favicon/favicon.svg') }}" alt="Maple Happy">
+    Maple Water Tracker
+  </h1>
+  <p>Keeping our calico healthy, one sip at a time</p>
+</header>
+
+<div class="container">
+  <div class="card quick-log">
+    <h2>
+      <svg class="icon">
+        <use href="{{ url_for('static', filename='images/icons.svg') }}#droplet"></use>
+      </svg>
+      Log Water Check
+    </h2>
+    <form id="logForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="logDate">Date</label>
+          <input type="date" id="logDate" required>
+        </div>
+        <div class="form-group">
+          <label for="logTime">Time</label>
+          <input type="time" id="logTime" required>
+        </div>
+        <div class="form-group">
+          <label for="logTotal">Total Weight (g)</label>
+          <input type="number" id="logTotal" placeholder="e.g. 540" required>
+          <span class="calc-hint" id="waterHint"></span>
+        </div>
+        <div class="form-group">
+          <label for="logRefill">Refilled To (g)</label>
+          <input type="number" id="logRefill" placeholder="Optional">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group form-group-notes">
+          <label for="logNotes">Notes</label>
+          <input type="text" id="logNotes" placeholder="e.g., Gave lactose free milk 10ml">
+        </div>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="manualDrink">
+        <label for="manualDrink">Override calculated drink:</label>
+        <label for="logDrinkManual">Drink (g)</label>
+        <input type="number" id="logDrinkManual" placeholder="g" class="manual-drink-input" disabled>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          <svg class="icon icon-btn">
+            <use href="{{ url_for('static', filename='images/icons.svg') }}#edit"></use>
+          </svg>
+          Log Entry
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Stats Summary -->
+  <div class="card">
+    <h2>
+      <svg class="icon">
+        <use href="{{ url_for('static', filename='images/icons.svg') }}#chart-bar"></use>
+      </svg>
+      Summary
+    </h2>
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="value" id="statAvg">--</div>
+        <div class="label">Daily Average (g)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" id="statDays">--</div>
+        <div class="label">Days Tracked</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" id="statTotal">--</div>
+        <div class="label">Total Intake (g)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" id="statBowl">{{ bowl_weight }}</div>
+        <div class="label">Bowl Weight (g)</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div>
+        <div class="chart-title">
+          <svg class="icon icon-sm">
+            <use href="{{ url_for('static', filename='images/icons.svg') }}#trending-up"></use>
+          </svg>
+          Daily Intake
+        </div>
+        <div class="chart-container">
+          <canvas id="dailyChart"></canvas>
+        </div>
+      </div>
+      <div>
+        <div class="chart-title">
+          <svg class="icon icon-sm">
+            <use href="{{ url_for('static', filename='images/icons.svg') }}#clock"></use>
+          </svg>
+          Time of Day
+        </div>
+        <div class="chart-container">
+          <canvas id="periodChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Entries -->
+  <div class="card">
+    <h2>
+      <svg class="icon">
+        <use href="{{ url_for('static', filename='images/icons.svg') }}#list"></use>
+      </svg>
+      Recent Entries
+    </h2>
+    <div class="entries-list" id="entriesList">
+      <div class="empty-state">
+        <div class="icon-large">
+          <svg>
+            <use href="{{ url_for('static', filename='images/icons.svg') }}#paw"></use>
+          </svg>
+        </div>
+        <p>No entries yet. Start logging!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tools -->
+  <div class="card">
+    <h2>
+      <svg class="icon icon-wrench">
+        <use href="{{ url_for('static', filename='images/icons.svg') }}#wrench"></use>
+      </svg>
+      Tools
+    </h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="export">Export for Vet</button>
+      <button class="tab" data-tab="import">Import Data</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </div>
+
+    <div class="tab-content active" id="tab-export">
+      <p class="tab-description">Download Maple's water intake data to share with your
+        vet.</p>
+      <div class="export-buttons">
+        <a href="/export/vet-report" class="btn btn-secondary btn-small">
+          <svg class="icon icon-btn">
+            <use href="{{ url_for('static', filename='images/icons.svg') }}#file-text"></use>
+          </svg>
+          Vet Report (.txt)
+        </a>
+        <a href="/export/csv" class="btn btn-secondary btn-small">
+          <svg class="icon icon-btn">
+            <use href="{{ url_for('static', filename='images/icons.svg') }}#download"></use>
+          </svg>
+          Full Data (.csv)
+        </a>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-import">
+      <p class="tab-description">Import data from your raw text format.</p>
+      <button class="btn btn-secondary btn-small" onclick="openImportModal()">
+        <svg class="icon icon-btn">
+          <use href="{{ url_for('static', filename='images/icons.svg') }}#upload"></use>
+        </svg>
+        Import Raw Data
+      </button>
+    </div>
+
+    <div class="tab-content" id="tab-settings">
+      <div class="settings-row">
+        <label for="settingsBowl">Bowl Weight:</label>
+        <input type="number" id="settingsBowl" value="{{ bowl_weight }}">
+        <span class="unit-label">grams</span>
+        <button class="btn btn-secondary btn-small" onclick="updateBowlWeight()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-overlay" id="importModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>
+      <svg class="icon">
+        <use href="{{ url_for('static', filename='images/icons.svg') }}#upload"></use>
+      </svg>
+      Import Raw Data
+    </h3>
+    <p class="modal-help-text">Paste your raw data in this format:</p>
+    <code class="code-sample">2026-01-25 - 14:13 -> 531g total | 108g water | 43g drink | 580g refill | Notes: Gave lactose free milk 10ml</code>
+    <label for="importText">Data:</label>
+    <textarea id="importText" placeholder="Paste your raw data here..."></textarea>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary btn-small" onclick="closeImportModal()">Cancel</button>
+      <button class="btn btn-primary btn-small" onclick="importData()">Import</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
+  <div class="modal modal-small">
+    <h3>
+      <svg class="icon">
+        <use href="{{ url_for('static', filename='images/icons.svg') }}#trash"></use>
+      </svg>
+      Delete Entry?
+    </h3>
+    <p class="modal-help-text">Are you sure you want to remove this water log? This action cannot be undone.</p>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary btn-small" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger btn-small" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon"></span>
+  <span class="toast-message"></span>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
