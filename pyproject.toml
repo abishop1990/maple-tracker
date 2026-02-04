@@ -1,0 +1,101 @@
+[project]
+name = "maple-tracker"
+dynamic = ["version"]
+description = "A local Flask web app to track your cat's water intake"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Sebastian Mocanu", email = "sebastian.mocanu31@gmail.com" }
+]
+classifiers = [
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Flask",
+    "Topic :: Home Automation",
+]
+keywords = ["cat", "water-tracker", "pet-health", "flask", "home-server"]
+dependencies = [
+    "flask>=3.0",
+    "matplotlib>=3.10",
+    "pandas>=2.3"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+prod = [
+    "gunicorn>=25.0.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.15",
+    "mypy>=1.0.0",
+]
+all = [
+    "maple-tracker[prod,dev]",
+]
+
+[project.scripts]
+maple-tracker = "web.app:main"
+
+[project.urls]
+Homepage = "https://github.com/brittleru/maple-tracker"
+Repository = "https://github.com/brittleru/maple-tracker"
+Issues = "https://github.com/brittleru/maple-tracker/issues"
+
+[tool.setuptools]
+packages = ["database", "web", "web.routes", "web.services"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"database" = ["sql-scripts/*.sql"]
+"web" = ["templates/*.html", "static/**/*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "database._version.__version__" }
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+exclude = ["tests", "venv"]
+strict = true
+
+[tool.ruff]
+target-version = "py310"
+exclude = ["tests", "venv", "env", ".venv", ".env"]
+force-exclude = true
+line-length = 120
+lint.select = ["A", "B", "E", "F", "G", "I", "N", "C4", "T10", "UP", "W", "PL", "RUF", "DOC", "PGH004"]
+lint.ignore = [
+    "I001",
+    "RUF012",
+    "UP015",
+    "N818",
+    "E501",
+    "B008",
+    "PLR0913",
+    "PLW1510",
+    "B905"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = "test_*"
+addopts = "-v --cov=database --cov=web --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["database", "web"]
+omit = ["tests/*", "runnable/*"]

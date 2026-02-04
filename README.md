@@ -7,6 +7,12 @@ Designed for use on your home network so multiple family members can log data fr
 
 **Database:** SQLite (simple file-based, zero configuration)
 
+<div align="center">
+
+![Website View](assets/Maple-Tracker.png)
+
+</div>
+
 ## Features
 
 - **Quick logging:** Enter total bowl weight, app calculates water and drink amounts
@@ -32,10 +38,19 @@ Or install manually:
 pip install flask pandas matplotlib
 ```
 
+For development or production:
+```bash
+# Requirements for production only
+python -m pip install -e ".[prod]"
+
+# Requirements with development tools and production dependencies 
+python -m pip install -e ".[all]"
+```
+
 #### 1.1 Import your existing data (optional)
 If you have existing data in raw text format:
 ```bash
-python import_data.py data-raw.txt
+python runnable/import_to_db.py --data-file=data-raw.txt --cat-name="Maple"
 ```
 
 ### 2. Run the app
@@ -55,6 +70,9 @@ To find your local IP:
 - **Windows:** Open Command Prompt, type `ipconfig`, look for "IPv4 Address"
 
 Your IP will look something like `192.168.1.XXX`
+
+### Deploy
+For deployment options please check [DEPLOY.md](DEPLOY.md) for instructions.
 
 ## Usage
 
