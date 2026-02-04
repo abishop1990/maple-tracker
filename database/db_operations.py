@@ -1,8 +1,14 @@
 import sqlite3
+from enum import Enum
 from pathlib import Path
 
 from database.import_data import Defaults, init_db, normalize_date, get_sql_query
 from database.path_manager import PathManager
+
+
+class SortOrder(str, Enum):
+    ASC = "ASC"
+    DESC = "DESC"
 
 
 def init_database(database_path: str | Path = PathManager.MAPLE_DATABASE_PATH) -> None:
@@ -30,9 +36,10 @@ def read_previous_entry(conn: sqlite3.Connection) -> sqlite3.Row | None:
     return cursor.fetchone()
 
 
-def read_all_entries(conn: sqlite3.Connection, order: str = "ASC") -> list[dict]:
+def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC) -> list[dict]:
     """Get all entries, ordered by date and time."""
-    cursor = conn.execute(f'SELECT * FROM entries ORDER BY date {order}, time {order}')
+    order_sql = order.value
+    cursor = conn.execute(f'SELECT * FROM entries ORDER BY date {order_sql}, time {order_sql}')
     return [dict(row) for row in cursor.fetchall()]
 
 
