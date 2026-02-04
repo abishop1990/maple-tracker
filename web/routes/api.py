@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify, g
 
 from database.db_operations import update_bowl_weight as db_update_bowl_weight, read_all_entries, SortOrder
-from web.services.entry_service import EntryInput, create_entry, delete_entry, get_all_entries, ValidationError
+from web.services.entry_service import EntryInput, EntryUpdateInput, create_entry, update_entry, delete_entry, \
+    get_entry, get_all_entries, ValidationError, NotFoundError
 from web.services.import_service import import_raw_text
 from web.services.stats_service import compute_stats
 
@@ -13,6 +14,21 @@ def get_entries():
     """Get all entries with bowl weight."""
     bowl_weight, entries = get_all_entries(g.db)
     return jsonify({"bowl_weight": bowl_weight, "entries": entries})
+
+
+@api_bp.route("/entries/<int:entry_id>", methods=["GET"])
+def get_entry_by_id(entry_id: int):
+    """Get a single entry by ID."""
+    if entry_id < 1:
+        return jsonify({"success": False, "error": "Invalid entry ID"}), 400
+
+    try:
+        entry = get_entry(g.db, entry_id)
+        return jsonify({"success": True, "entry": entry})
+    except NotFoundError as e:
+        return jsonify({"success": False, "error": str(e)}), 404
+    except Exception:
+        return jsonify({"success": False, "error": "An unexpected error occurred"}), 500
 
 
 @api_bp.route("/entries", methods=["POST"])
@@ -30,6 +46,40 @@ def add_entry():
             "drink": result.drink,
             "water_weight": result.water_weight,
         })
+    except ValidationError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception:
+        return jsonify({"success": False, "error": "An unexpected error occurred"}), 500
+
+
+@api_bp.route("/entries/<int:entry_id>", methods=["PUT"])
+def update_entry_endpoint(entry_id: int):
+    """Update an existing water tracking entry."""
+    if entry_id < 1:
+        return jsonify({"success": False, "error": "Invalid entry ID"}), 400
+
+    if not request.json:
+        return jsonify({"success": False, "error": "JSON body required"}), 400
+
+    try:
+        update_input = EntryUpdateInput.from_dict(request.json)
+        result = update_entry(g.db, entry_id, update_input)
+
+        return jsonify({
+            "success": True,
+            "entry": {
+                "id": result.id,
+                "date": result.date,
+                "time": result.time,
+                "total_weight": result.total_weight,
+                "water_weight": result.water_weight,
+                "drink": result.drink,
+                "refill_to": result.refill_to,
+                "notes": result.notes,
+            }
+        })
+    except NotFoundError as e:
+        return jsonify({"success": False, "error": str(e)}), 404
     except ValidationError as e:
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception:

@@ -31,12 +31,8 @@ def create_app(database_path: str | None = None) -> Flask:
     """
     Application factory for creating Flask app instances.
 
-    Args:
-        database_path: Optional path to database file.
-                      Defaults to PathManager.MAPLE_DATABASE_PATH
-
-    Returns:
-        Configured Flask application
+    :param database_path: Optional path to database file. Defaults to PathManager.MAPLE_DATABASE_PATH
+    :return: Configured Flask application
     """
     app = Flask(__name__)
 
@@ -52,6 +48,7 @@ def create_app(database_path: str | None = None) -> Flask:
 
 
 if __name__ == "__main__":
-    application = create_app()
-    init_database()
+    db_path = PathManager.MAPLE_DATABASE_PATH
+    application = create_app(database_path=db_path)
+    init_database(database_path=application.config["DATABASE"])
     application.run(host="0.0.0.0", port=5000, debug=True)

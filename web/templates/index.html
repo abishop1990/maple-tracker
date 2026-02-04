@@ -200,7 +200,7 @@
       <div class="settings-row">
         <label for="settingsBowl">Bowl Weight:</label>
         <input type="number" id="settingsBowl" value="{{ bowl_weight }}">
-        <span class="unit-label">grams</span>
+        <span class="unit-label">(g)</span>
         <button class="btn btn-secondary btn-small" onclick="updateBowlWeight()">Save</button>
       </div>
     </div>
@@ -240,6 +240,55 @@
       <button class="btn btn-secondary btn-small" onclick="closeDeleteModal()">Cancel</button>
       <button class="btn btn-danger btn-small" id="confirmDeleteBtn">Delete</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>
+      <svg class="icon">
+        <use href="{{ url_for('static', filename='images/icons.svg') }}#edit"></use>
+      </svg>
+      Edit Entry
+    </h3>
+    <form id="editForm">
+      <input type="hidden" id="editEntryId">
+      <div class="form-row-modal">
+        <div class="form-group">
+          <label for="editDate">Date</label>
+          <input type="date" id="editDate" required>
+        </div>
+        <div class="form-group">
+          <label for="editTime">Time</label>
+          <input type="time" id="editTime" required>
+        </div>
+      </div>
+      <div class="form-row-modal">
+        <div class="form-group">
+          <label for="editTotal">Total Weight (g)</label>
+          <input type="number" id="editTotal" required>
+          <span class="calc-hint" id="editWaterHint"></span>
+        </div>
+        <div class="form-group">
+          <label for="editDrink">Drink (g)</label>
+          <input type="number" id="editDrink">
+        </div>
+      </div>
+      <div class="form-row-modal">
+        <div class="form-group">
+          <label for="editRefill">Refilled To (g)</label>
+          <input type="number" id="editRefill" placeholder="Optional">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="editNotes">Notes</label>
+        <input type="text" id="editNotes" class="full-width">
+      </div>
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-secondary btn-small" onclick="closeEditModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-small">Save Changes</button>
+      </div>
+    </form>
   </div>
 </div>
 
