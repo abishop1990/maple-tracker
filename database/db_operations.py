@@ -35,6 +35,11 @@ def read_previous_entry(conn: sqlite3.Connection) -> sqlite3.Row | None:
     cursor = conn.execute("SELECT * FROM entries ORDER BY date DESC, time DESC LIMIT 1")
     return cursor.fetchone()
 
+def read_entry_by_id(conn: sqlite3.Connection, entry_id: int) -> dict | None:
+    """Get a single entry by ID."""
+    cursor = conn.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
+    row = cursor.fetchone()
+    return dict(row) if row else None
 
 def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC) -> list[dict]:
     """Get all entries, ordered by date and time."""
@@ -60,6 +65,32 @@ def create_entry(
     cursor = conn.execute(insert_sql, (db_date, time, total_weight, water_weight, drink, refill_to, notes))
     conn.commit()
     return cursor.lastrowid
+
+def update_entry_by_id(
+        conn: sqlite3.Connection,
+        entry_id: int,
+        date: str,
+        time: str,
+        total_weight: int,
+        water_weight: int,
+        drink: int = 0,
+        refill_to: int | None = None,
+        notes: str = ""
+) -> bool:
+    """
+    Update an existing entry by ID.
+
+    :return: True if an entry was updated, False if entry not found
+    """
+    update_sql = get_sql_query("update_entry.sql")
+    db_date = normalize_date(date)
+
+    cursor = conn.execute(
+        update_sql,
+        (db_date, time, total_weight, water_weight, drink, refill_to, notes, entry_id)
+    )
+    conn.commit()
+    return cursor.rowcount > 0
 
 
 def delete_entry_by_id(conn: sqlite3.Connection, entry_id: int) -> None:

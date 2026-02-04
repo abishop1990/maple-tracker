@@ -336,6 +336,43 @@ header p {
   background: #a33a2e;
 }
 
+/* Icon-only buttons */
+.btn-icon {
+  padding: 0.4rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon svg {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.btn-edit {
+  background: var(--ginger-pale);
+  color: var(--charcoal);
+}
+
+.btn-edit:hover {
+  background: var(--ginger-light);
+  color: white;
+}
+
+.btn-delete {
+  background: transparent;
+  color: var(--warm-gray);
+}
+
+.btn-delete:hover {
+  background: var(--error);
+  color: white;
+}
+
 /* Stats Cards */
 .stats-grid {
   display: grid;
@@ -479,6 +516,12 @@ header p {
   margin-left: 0.5rem;
 }
 
+.entry-actions {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
 /* Export Section */
 .export-buttons {
   display: flex;
@@ -545,7 +588,7 @@ header p {
   background: var(--warm-white);
   border-radius: 24px;
   padding: 2rem;
-  max-width: 500px;
+  max-width: 550px;
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
@@ -581,6 +624,7 @@ header p {
   display: flex;
   gap: 0.6rem;
   justify-content: flex-end;
+  margin-top: 1.5rem;
 }
 
 .modal-small {
@@ -591,6 +635,48 @@ header p {
 .modal-small .modal-buttons {
   justify-content: center;
   gap: 15px;
+}
+
+/* Modal form styles */
+.modal .form-group {
+  margin-bottom: 1rem;
+}
+
+.modal .form-group label {
+  color: var(--charcoal);
+  margin-bottom: 0.4rem;
+}
+
+.modal .form-group input {
+  background: var(--cream);
+  border: 2px solid var(--ginger-pale);
+  color: var(--charcoal);
+}
+
+.modal .form-group input:focus {
+  outline: none;
+  border-color: var(--ginger);
+  box-shadow: 0 0 0 3px rgba(224, 123, 57, 0.15);
+}
+
+.modal .form-group input::placeholder {
+  color: var(--warm-gray);
+}
+
+.form-row-modal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 500px) {
+  .form-row-modal {
+    grid-template-columns: 1fr;
+  }
+}
+
+.full-width {
+  width: 100%;
 }
 
 /* Toast Notifications */
@@ -768,4 +854,21 @@ header p {
   overflow-x: auto;
   margin: 0.75rem 0;
   white-space: pre-wrap;
+}
+
+@media (max-width: 480px) {
+  .settings-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .settings-row input {
+    width: 100%;
+  }
+
+  .settings-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

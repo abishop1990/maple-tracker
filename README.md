@@ -10,6 +10,7 @@ Designed for use on your home network so multiple family members can log data fr
 ## Features
 
 - **Quick logging:** Enter total bowl weight, app calculates water and drink amounts
+- **Edit & delete entries:** Fix mistakes or remove incorrect logs
 - **Daily charts:** See water intake trends over time
 - **Time-of-day breakdown:** Understand when your cat drinks most
 - **Vet export:** Download reports in TXT or CSV format
@@ -64,6 +65,11 @@ Your IP will look something like `192.168.1.XXX`
 3. The app auto-calculates water amount and how much Maple drank since last check
 4. If you refilled the bowl, enter the **refill weight** too
 
+### Editing entries
+
+Click the pencil icon on any entry to edit its date, time, weights, or notes. Changes are saved immediately.
+
+
 ### Understanding the data
 
 - **Water Weight** = `Total Weight - Bowl Weight` (423g by default)
@@ -104,6 +110,7 @@ sqlite> .quit
 **Wrong calculations?**
 - Go to Settings and verify the bowl weight is correct
 - Use the "Override calculated drink" checkbox to manually enter amounts
+- Edit existing entries by clicking the pencil icon
 
 **Need to reset everything?**
 - Delete `maple.db` and restart the app

@@ -2,6 +2,7 @@ let bowlWeight = 0;
 let dailyChart = null;
 let periodChart = null;
 let entryToDelete = null;
+let entryToEdit = null;
 
 const ui = {};
 
@@ -31,6 +32,18 @@ function cacheElements() {
   ui.deleteModal = document.getElementById('deleteModal');
   ui.confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
+  // Edit modal elements
+  ui.editModal = document.getElementById('editModal');
+  ui.editForm = document.getElementById('editForm');
+  ui.editEntryId = document.getElementById('editEntryId');
+  ui.editDate = document.getElementById('editDate');
+  ui.editTime = document.getElementById('editTime');
+  ui.editTotal = document.getElementById('editTotal');
+  ui.editDrink = document.getElementById('editDrink');
+  ui.editRefill = document.getElementById('editRefill');
+  ui.editNotes = document.getElementById('editNotes');
+  ui.editWaterHint = document.getElementById('editWaterHint');
+
   // Toast
   ui.toast = document.getElementById('toast');
 }
@@ -44,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadEntries();
   setupTabs();
   setupFormHandlers();
+  setupEditFormHandlers();
 });
 
 
@@ -68,6 +82,11 @@ function setupFormHandlers() {
   ui.logForm.addEventListener('submit', handleFormSubmit);
   ui.logTotal.addEventListener('input', handleTotalWeightInput);
   ui.manualDrink.addEventListener('change', handleManualDrinkToggle);
+}
+
+function setupEditFormHandlers() {
+  ui.editForm.addEventListener('submit', handleEditFormSubmit);
+  ui.editTotal.addEventListener('input', handleEditTotalWeightInput);
 }
 
 async function handleFormSubmit(e) {
@@ -111,6 +130,16 @@ function handleTotalWeightInput(e) {
     ui.waterHint.textContent = `= ${water}g water`;
   } else {
     ui.waterHint.textContent = '';
+  }
+}
+
+function handleEditTotalWeightInput(e) {
+  const total = parseInt(e.target.value);
+  if (total) {
+    const water = total - bowlWeight;
+    ui.editWaterHint.textContent = `= ${water}g water`;
+  } else {
+    ui.editWaterHint.textContent = '';
   }
 }
 
@@ -254,7 +283,14 @@ async function loadEntries() {
           </div>
         </div>
         <span class="entry-drink">${e.drink || 0}g</span>
-        <button class="btn btn-danger btn-small" onclick="deleteEntry(${e.id})" title="Delete">x</button>
+        <div class="entry-actions">
+          <button class="btn btn-icon btn-edit" onclick="editEntry(${e.id})" title="Edit">
+            ${iconHtml('edit')}
+          </button>
+          <button class="btn btn-icon btn-delete" onclick="deleteEntry(${e.id})" title="Delete">
+            ${iconHtml('trash')}
+          </button>
+        </div>
       </div>
     `).join('');
 
@@ -263,6 +299,74 @@ async function loadEntries() {
   }
 }
 
+async function editEntry(id) {
+  try {
+    const res = await fetch(`/api/entries/${id}`);
+    const data = await res.json();
+    if (!data.success) {
+      showToast('Failed to load entry', 'error');
+      return;
+    }
+
+    const entry = data.entry;
+    entryToEdit = id;
+
+    ui.editEntryId.value = entry.id;
+    ui.editDate.value = entry.date;
+    ui.editTime.value = entry.time;
+    ui.editTotal.value = entry.total_weight;
+    ui.editDrink.value = entry.drink || 0;
+    ui.editRefill.value = entry.refill_to || '';
+    ui.editNotes.value = entry.notes || '';
+
+    const water = entry.total_weight - bowlWeight;
+    ui.editWaterHint.textContent = `= ${water}g water`;
+    ui.editModal.classList.add('active');
+  } catch (err) {
+    showToast('Failed to load entry', 'error');
+  }
+}
+
+async function handleEditFormSubmit(e) {
+  e.preventDefault();
+
+  const entryId = ui.editEntryId.value;
+  const updateData = {
+    date: ui.editDate.value,
+    time: ui.editTime.value,
+    total_weight: parseInt(ui.editTotal.value),
+    drink: parseInt(ui.editDrink.value) || 0,
+    refill_to: ui.editRefill.value ? parseInt(ui.editRefill.value) : null,
+    notes: ui.editNotes.value || ""
+  };
+
+  try {
+    const res = await fetch(`/api/entries/${entryId}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(updateData)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showToast('Entry updated!', 'success');
+      closeEditModal();
+      loadStats();
+      loadEntries();
+    } else {
+      showToast('Error: ' + data.error, 'error');
+    }
+  } catch (err) {
+    showToast('Failed to update entry', 'error');
+  }
+}
+
+function closeEditModal() {
+  ui.editModal.classList.remove('active');
+  entryToEdit = null;
+  ui.editForm.reset();
+  ui.editWaterHint.textContent = '';
+}
 
 function deleteEntry(id) {
   entryToDelete = id;
