@@ -10,6 +10,7 @@ class PathManager:
     MAPLE_RAW_DATA_PATH = DATA_DIR / "maple-data-raw.txt"
 
     OUTPUT_DIR = BASE_DIR / "output"
+    TEST_RESOURCES_DIR = BASE_DIR / "tests" / "resources"
 
 
 if __name__ == "__main__":

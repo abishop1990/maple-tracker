@@ -1,0 +1,14 @@
+Bowl has 423g
+25/01/2026 - 01:41 -> 574g total | 151g water |
+25/01/2026 - 14:13 -> 531g total | 108g water | 43g drink
+25/01/2026 - 22:16 -> 514g total |  91g water | 17g drink | 596g refill
+26/01/2026 - 16:11 -> 540g total | 117g water | 56g drink
+26/01/2026 - 22:10 -> 511g total |  88g water | 29g drink | 582g refill
+27/01/2026 - 01:14 -> 516g total |  93g water | 66g drink | 593g refill
+28/01/2026 - 22:20 -> 535g total | 112g water | 58g drink | 604g refill
+30/01/2026 - 01:17 -> 566g total | 143g water | 38g drink | 589g refill
+31/01/2026 - 02:59 -> 539g total | 116g water | 50g drink | 576g refill
+01/02/2026 - 03:02 -> 514g total |  91g water | 62g drink | 605g refill
+02/02/2026 - 02:10 -> 550g total | 127g water | 55g drink | 631g refill
+03/02/2026 - 14:15 -> 581g total | 158g water | 50g drink | 588g refill
+04/02/2026 - 01:58 -> 560g total | 137g water | 28g drink
