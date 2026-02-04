@@ -6,12 +6,12 @@ class PathManager:
 
     DATA_DIR = BASE_DIR / "database" / "data"
     SQL_SCRIPS_DIR = BASE_DIR / "database" / "sql-scripts"
-    DATABASE_PATH = DATA_DIR / "maple.db"
-    RAW_DATA_PATH = DATA_DIR / "data-raw.txt"
+    MAPLE_DATABASE_PATH = DATA_DIR / "maple.db"
+    MAPLE_RAW_DATA_PATH = DATA_DIR / "maple-data-raw.txt"
 
     OUTPUT_DIR = BASE_DIR / "output"
 
 
 if __name__ == "__main__":
     print(PathManager.BASE_DIR)
-    print(PathManager.DATABASE_PATH)
+    print(PathManager.MAPLE_DATABASE_PATH)

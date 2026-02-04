@@ -115,7 +115,7 @@ if __name__ == "__main__":
     from database.data_parse import parse_kitty_data, read_raw_data
     from database.path_manager import PathManager
 
-    raw_data = read_raw_data(PathManager.RAW_DATA_PATH)
+    raw_data = read_raw_data(PathManager.MAPLE_RAW_DATA_PATH)
     maple_df = parse_kitty_data(raw_data)
     cat = "Maple"
     maple_summary = daily_summary_to_csv(maple_df, save_dir=PathManager.OUTPUT_DIR, cat_name=cat)
