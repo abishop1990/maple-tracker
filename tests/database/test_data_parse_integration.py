@@ -12,7 +12,7 @@ class TestDataParseIntegration(unittest.TestCase):
             1. Reads the actual data from the file
             2. Parse the text into a DataFrame
             3. Generate a daily summary
-            4. Verification against known data in maple-data-raw.txt. On 25/01/2026,
+            4. Verification against known data in maple-data-raw.txt. On 2026/01/25,
                 Maple had three entries: 0g (implied), 43g measured at 14:13 and 17g measured at 22:16.
             5. Verify sorting (latest date should be at the end)
         """
@@ -25,14 +25,14 @@ class TestDataParseIntegration(unittest.TestCase):
 
         summary = daily_summary_to_csv(df)
 
-        jan_25_data = summary[summary["Date"] == "25/01/2026"]
+        jan_25_data = summary[summary["Date"] == "2026-01-25"]
         self.assertFalse(jan_25_data.empty)
 
         total_drink_jan_25 = jan_25_data["Drink_g"].values[0]
         self.assertEqual(total_drink_jan_25, 60)
 
         last_date = summary.iloc[-1]["Date"]
-        self.assertEqual(last_date, "04/02/2026")
+        self.assertEqual(last_date, "2026-02-04")
 
 
 if __name__ == "__main__":

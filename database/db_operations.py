@@ -1,7 +1,7 @@
 import sqlite3
 from pathlib import Path
 
-from database.import_data import Defaults, init_db, normalize_date
+from database.import_data import Defaults, init_db, normalize_date, get_sql_query
 from database.path_manager import PathManager
 
 
@@ -47,11 +47,10 @@ def create_entry(
         notes: str = ""
 ) -> int:
     """Add a new entry and return the new entry ID."""
+    insert_sql = get_sql_query("insert_entry.sql")
     db_date = normalize_date(date)
-    cursor = conn.execute('''
-                          INSERT INTO entries (date, time, total_weight, water_weight, drink, refill_to, notes)
-                          VALUES (?, ?, ?, ?, ?, ?, ?)
-                          ''', (db_date, time, total_weight, water_weight, drink, refill_to, notes))
+
+    cursor = conn.execute(insert_sql, (db_date, time, total_weight, water_weight, drink, refill_to, notes))
     conn.commit()
     return cursor.lastrowid
 

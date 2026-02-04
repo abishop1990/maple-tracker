@@ -6,7 +6,7 @@ import pandas as pd
 
 def daily_summary_to_csv(df: pd.DataFrame, save_dir: str | Path | None = None, cat_name: str = "Maple") -> pd.DataFrame:
     daily_summary = df.groupby("Date")["Drink_g"].sum().reset_index()
-    daily_summary["Date_dt"] = pd.to_datetime(daily_summary["Date"], format="%d/%m/%Y")
+    daily_summary["Date_dt"] = pd.to_datetime(daily_summary["Date"], format="%Y-%m-%d")
     daily_summary = daily_summary.sort_values("Date_dt")
 
     if save_dir is not None:
