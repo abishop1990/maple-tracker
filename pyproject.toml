@@ -35,10 +35,10 @@ prod = [
     "gunicorn>=25.0.0",
 ]
 dev = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
+    "pytest>=9.0",
+    "pytest-cov>=7.0",
     "ruff>=0.15",
-    "mypy>=1.0.0",
+    "mypy>=1.19",
 ]
 all = [
     "maple-tracker[prod,dev]",
@@ -46,6 +46,7 @@ all = [
 
 [project.scripts]
 maple-tracker = "web.app:main"
+maple-import = "runnable.import_to_db:main"
 
 [project.urls]
 Homepage = "https://github.com/brittleru/maple-tracker"
@@ -79,16 +80,14 @@ force-exclude = true
 line-length = 120
 lint.select = ["A", "B", "E", "F", "G", "I", "N", "C4", "T10", "UP", "W", "PL", "RUF", "DOC", "PGH004"]
 lint.ignore = [
-    "I001",
+    "I001", # PyCharm uses something else for imports
     "RUF012",
     "UP015",
-    "N818",
-    "E501",
-    "B008",
-    "PLR0913",
-    "PLW1510",
-    "B905"
 ]
+format.quote-style = "double"
+format.indent-style = "space"
+format.docstring-code-format = true
+
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

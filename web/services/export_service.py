@@ -2,7 +2,6 @@ import io
 from datetime import datetime
 
 import pandas as pd
-
 from database.compute_stats import compute_daily_totals
 
 

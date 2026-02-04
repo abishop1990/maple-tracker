@@ -1,6 +1,6 @@
+from database.db_operations import read_bowl_weight, read_all_entries, SortOrder
 from flask import Blueprint, g, send_file
 
-from database.db_operations import read_bowl_weight, read_all_entries, SortOrder
 from web.services.export_service import generate_csv_export, generate_vet_report, get_export_filename
 
 export_bp = Blueprint("export", __name__, url_prefix="/export")

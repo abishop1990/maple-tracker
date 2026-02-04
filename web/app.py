@@ -1,9 +1,8 @@
 import sqlite3
 
-from flask import Flask, g
-
 from database.db_operations import init_database
 from database.path_manager import PathManager
+from flask import Flask, g
 from web.routes.api import api_bp
 from web.routes.export import export_bp
 from web.routes.main import main_bp

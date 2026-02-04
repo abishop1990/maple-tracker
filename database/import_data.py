@@ -3,7 +3,6 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-
 from database.path_manager import PathManager
 
 

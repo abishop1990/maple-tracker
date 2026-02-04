@@ -50,7 +50,7 @@ def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC)
     return [dict(row) for row in cursor.fetchall()]
 
 
-def create_entry(
+def create_entry(  # noqa: PLR0913
         conn: sqlite3.Connection,
         date: str,
         time: str,
@@ -69,7 +69,7 @@ def create_entry(
     return cursor.lastrowid
 
 
-def update_entry_by_id(
+def update_entry_by_id(  # noqa: PLR0913
         conn: sqlite3.Connection,
         entry_id: int,
         date: str,

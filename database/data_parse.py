@@ -21,14 +21,14 @@ def parse_kitty_data(data: str) -> pd.DataFrame:
     """
     lines = data.strip().split("\n")
     parsed_data = []
-
+    date_split_len = 2
     for line in lines:
-        line = line.strip()
+        line = line.strip()  # noqa: PLW2901
         if not line or "Bowl has" in line:
             continue
 
         parts = line.split("->")
-        if len(parts) < 2:
+        if len(parts) < date_split_len:
             continue
 
         timestamp_str = parts[0].strip()

@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, g
-
 from database.db_operations import read_bowl_weight
+from flask import Blueprint, render_template, g
 
 main_bp = Blueprint("main", __name__)
 

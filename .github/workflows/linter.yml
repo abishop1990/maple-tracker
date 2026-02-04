@@ -1,4 +1,4 @@
-name: Ruff Linter
+name: Linter
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   lint:
+    name: Lint & Format
     runs-on: ubuntu-latest
 
     steps:
@@ -16,12 +17,14 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
 
-      - name: Install Python with uv
+      - name: Set up Python
         run: uv python install 3.10
 
-      - name: Sync project deps
-        run: uv sync --locked --all-extras --dev
+      - name: Install dependencies
+        run: uv pip install --system -e ".[dev]"
 
-      - name: Run Ruff
-        run: uv run ruff check .
+      - name: Run linter
+        run: ruff check .

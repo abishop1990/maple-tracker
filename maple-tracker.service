@@ -5,10 +5,16 @@ After=network.target
 [Service]
 Type=simple
 User=YOUR_USERNAME
+Group=YOUR_USERNAME
 WorkingDirectory=/home/YOUR_USERNAME/maple-tracker
+Environment="PATH=/home/YOUR_USERNAME/maple-tracker/venv/bin"
 ExecStart=/home/YOUR_USERNAME/maple-tracker/venv/bin/gunicorn --bind 0.0.0.0:5000 --workers 2 "web.app:create_app()"
 Restart=always
 RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/YOUR_USERNAME/maple-tracker/database/data
 
 [Install]
 WantedBy=multi-user.target

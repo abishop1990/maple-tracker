@@ -63,11 +63,15 @@ def plot_kitty_data(daily_summary: pd.DataFrame, save_dir: str | Path | None = N
 
 
 def time_period(hour: int) -> str:
-    if 5 <= hour < 12:
+    morning_start_hour = 5
+    morning_end_hour = 12
+    afternoon_end_hour = 18
+    evening_end_hour = 23
+    if morning_start_hour <= hour < morning_end_hour:
         return "Morning\n(5-12)"
-    elif 12 <= hour < 18:
+    elif morning_end_hour <= hour < afternoon_end_hour:
         return "Afternoon\n(12-18)"
-    elif 18 <= hour < 23:
+    elif afternoon_end_hour <= hour < evening_end_hour:
         return "Evening\n(18-23)"
     else:
         return "Night\n(23-5)"
@@ -89,7 +93,7 @@ def plot_time_pie_chart(df: pd.DataFrame, save_dir: str | Path | None = None, ca
 
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    wedges, texts, autotexts = ax.pie(
+    _, _, autotexts = ax.pie(
         values,
         labels=labels,
         colors=chart_colors,

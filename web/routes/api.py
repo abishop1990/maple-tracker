@@ -1,6 +1,6 @@
+from database.db_operations import update_bowl_weight as db_update_bowl_weight, read_all_entries, SortOrder
 from flask import Blueprint, request, jsonify, g
 
-from database.db_operations import update_bowl_weight as db_update_bowl_weight, read_all_entries, SortOrder
 from web.services.entry_service import (
     EntryInput,
     EntryUpdateInput,
@@ -164,7 +164,8 @@ def import_raw():
     if not raw_text.strip():
         return jsonify({"success": False, "error": "No data provided"}), 400
 
-    if len(raw_text) > 100_000:  # ~100KB
+    max_length_for_text = 100_000  # ~100KB
+    if len(raw_text) > max_length_for_text:
         return jsonify({"success": False, "error": "Import data too large"}), 400
 
     try:

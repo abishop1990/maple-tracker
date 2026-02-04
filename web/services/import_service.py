@@ -1,7 +1,6 @@
 import sqlite3
 
 import pandas as pd
-
 from database.data_parse import parse_kitty_data
 from database.db_operations import read_bowl_weight, create_entry
 

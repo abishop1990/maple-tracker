@@ -51,8 +51,8 @@ class EntryValidatorBase:
             return None
         try:
             weight = int(value)
-        except (ValueError, TypeError):
-            raise ValidationError(f"{name} must be a valid number")
+        except (ValueError, TypeError) as exc:
+            raise ValidationError(f"{name} must be a valid number") from exc
 
         if not cls.MIN_WEIGHT <= weight <= cls.MAX_WEIGHT:
             raise ValidationError(f"{name} must be between {cls.MIN_WEIGHT} and {cls.MAX_WEIGHT}")
@@ -71,8 +71,8 @@ class EntryValidatorBase:
 
         try:
             datetime.strptime(value, "%Y-%m-%d")
-        except ValueError:
-            raise ValidationError("date is not a valid calendar date")
+        except ValueError as exc:
+            raise ValidationError("date is not a valid calendar date") from exc
         return value
 
     @classmethod
@@ -88,8 +88,8 @@ class EntryValidatorBase:
 
         try:
             datetime.strptime(value, "%H:%M")
-        except ValueError:
-            raise ValidationError("time is not a valid time")
+        except ValueError as exc:
+            raise ValidationError("time is not a valid time") from exc
         return value
 
     @classmethod
