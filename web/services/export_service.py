@@ -3,10 +3,12 @@ from datetime import datetime
 from typing import Any
 
 import pandas as pd
+
 from database.compute_stats import compute_daily_totals
+from database.types import Entry
 
 
-def generate_csv_export(entries: list[dict[str, Any]]) -> io.BytesIO:
+def generate_csv_export(entries: list[Entry] | list[dict[Any, Any]]) -> io.BytesIO:
     """
     Generate CSV export from entries.
 
@@ -23,7 +25,7 @@ def generate_csv_export(entries: list[dict[str, Any]]) -> io.BytesIO:
     return bytes_output
 
 
-def generate_vet_report(entries: list[dict[str, Any]], bowl_weight: int) -> io.BytesIO:
+def generate_vet_report(entries: list[Entry] | list[dict[Any, Any]], bowl_weight: int) -> io.BytesIO:
     """
     Generate formatted vet report from entries.
 
@@ -46,7 +48,7 @@ def generate_vet_report(entries: list[dict[str, Any]], bowl_weight: int) -> io.B
 
 # fmt: off
 def _build_report_header(
-        entries: list[dict[str, Any]],
+        entries: list[Entry] | list[dict[Any, Any]],
         daily_totals: dict[str, int],
         bowl_weight: int,
         avg: float,
@@ -83,7 +85,7 @@ def _build_daily_breakdown(daily_totals: dict[str, int]) -> str:
     return "\n".join(lines)
 
 
-def _build_detailed_log(entries: list[dict[str, Any]]) -> str:
+def _build_detailed_log(entries: list[Entry] | list[dict[Any, Any]]) -> str:
     """Build the detailed log section."""
     lines = ["DETAILED LOG (Raw Data)", "-" * 50]
 

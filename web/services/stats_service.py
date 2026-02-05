@@ -1,7 +1,8 @@
 from datetime import datetime
-from typing import Any, TypedDict
+from typing import TypedDict, Any
 
 from database.compute_stats import compute_daily_totals, compute_time_of_day_breakdown, compute_summary_stats
+from database.types import Entry
 
 
 class DailyTotal(TypedDict):
@@ -16,7 +17,7 @@ class StatsResponse(TypedDict):
     summary: dict[str, int | float]
 
 
-def compute_stats(entries: list[dict[str, Any]]) -> StatsResponse:
+def compute_stats(entries: list[Entry] | list[dict[Any, Any]] | None) -> StatsResponse:
     """
     Compute all statistics from entries.
 

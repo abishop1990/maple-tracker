@@ -1,6 +1,8 @@
 import sqlite3
 from typing import Any
 
+from database.types import Entry
+
 
 def calculate_drink_amount(current_water_weight: int, prev_entry: sqlite3.Row | None, bowl_weight: int) -> int:
     """Calculate how much water was drunk since the previous entry."""
@@ -14,7 +16,7 @@ def calculate_drink_amount(current_water_weight: int, prev_entry: sqlite3.Row | 
     return max(0, prev_water - current_water_weight)
 
 
-def compute_daily_totals(entries: list[dict[str, Any]]) -> dict[str, int]:
+def compute_daily_totals(entries: list[Entry] | list[dict[Any, Any]]) -> dict[str, int]:
     """Compute daily drinking totals from entries."""
     daily: dict[str, int] = {}
     for entry in entries:
@@ -23,7 +25,7 @@ def compute_daily_totals(entries: list[dict[str, Any]]) -> dict[str, int]:
     return daily
 
 
-def compute_time_of_day_breakdown(entries: list[dict[str, Any]]) -> dict[str, int]:
+def compute_time_of_day_breakdown(entries: list[Entry] | list[dict[Any, Any]]) -> dict[str, int]:
     """Compute drinking totals by time of day."""
     periods = {"Morning (5-12)": 0, "Afternoon (12-18)": 0, "Evening (18-23)": 0, "Night (23-5)": 0}
     morning_start_hour = 5

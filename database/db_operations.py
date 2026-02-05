@@ -5,6 +5,7 @@ from typing import Any
 
 from database.import_data import Defaults, init_db, normalize_date, get_sql_query
 from database.path_manager import PathManager
+from database.types import Entry
 
 
 class SortOrder(str, Enum):
@@ -37,14 +38,14 @@ def read_previous_entry(conn: sqlite3.Connection) -> sqlite3.Row | Any:
     return cursor.fetchone()
 
 
-def read_entry_by_id(conn: sqlite3.Connection, entry_id: int) -> dict[Any, Any] | None:
+def read_entry_by_id(conn: sqlite3.Connection, entry_id: int) -> Entry | dict[Any, Any] | None:
     """Get a single entry by ID."""
     cursor = conn.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
     row = cursor.fetchone()
     return dict(row) if row else None
 
 
-def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC) -> list[dict[Any, Any]]:
+def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC) -> list[dict[Any, Any]] | list[Entry] | None:
     """Get all entries, ordered by date and time."""
     order_sql = order.value
     cursor = conn.execute(f"SELECT * FROM entries ORDER BY date {order_sql}, time {order_sql}")

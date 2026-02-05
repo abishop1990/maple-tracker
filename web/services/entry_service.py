@@ -1,8 +1,11 @@
 import re
 import sqlite3
+from _typeshed import SupportsTrunc
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any
+from typing import SupportsInt, Any, SupportsIndex
+
+from typing_extensions import Buffer
 
 from database.compute_stats import calculate_drink_amount
 from database.db_operations import (
@@ -15,6 +18,7 @@ from database.db_operations import (
     read_all_entries,
     SortOrder,
 )
+from database.types import Entry
 
 
 class ValidationError(ValueError):
@@ -38,7 +42,7 @@ class EntryValidatorBase:
     MAX_NOTES_LENGTH = 500
 
     @classmethod
-    def _validate_base_dict(cls, data: Any) -> dict[str, Any]:
+    def _validate_base_dict(cls, data: object) -> dict[str, object]:
         if data is None:
             raise ValidationError("Request body is required")
         if not isinstance(data, dict):
@@ -61,7 +65,7 @@ class EntryValidatorBase:
         return weight
 
     @classmethod
-    def _parse_date(cls, value: Any) -> str | None:
+    def _parse_date(cls, value: str | object) -> str | None:
         """Validate and parse a date value."""
         if value is None or value == "":
             return None
@@ -78,7 +82,7 @@ class EntryValidatorBase:
         return value
 
     @classmethod
-    def _parse_time(cls, value: Any) -> str | None:
+    def _parse_time(cls, value: str | object) -> str | None:
         """Validate and parse a time value."""
         if value is None or value == "":
             return None
@@ -95,7 +99,7 @@ class EntryValidatorBase:
         return value
 
     @classmethod
-    def _parse_notes(cls, value: Any, required: bool = False) -> str | None:
+    def _parse_notes(cls, value: str | object, required: bool = False) -> str | None:
         """Validate and parse notes."""
         if value is None:
             return "" if required else None
@@ -120,7 +124,7 @@ class EntryInput(EntryValidatorBase):
     is_refill_only: bool = False
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "EntryInput":
+    def from_dict(cls, data: object) -> "EntryInput":
         """Create EntryInput from request data with validation."""
         data = cls._validate_base_dict(data)
 
@@ -158,7 +162,7 @@ class EntryUpdateInput(EntryValidatorBase):
     notes: str | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "EntryUpdateInput":
+    def from_dict(cls, data: object) -> "EntryUpdateInput":
         """Create EntryUpdateInput from request data with validation."""
         data = cls._validate_base_dict(data)
 
@@ -317,7 +321,7 @@ def update_entry(conn: sqlite3.Connection, entry_id: int, update_input: EntryUpd
     )
 
 
-def get_entry(conn: sqlite3.Connection, entry_id: int) -> dict[Any, Any]:
+def get_entry(conn: sqlite3.Connection, entry_id: int) -> Entry | dict[Any, Any]:
     """
     Get a single entry by ID.
 
@@ -336,7 +340,7 @@ def delete_entry(conn: sqlite3.Connection, entry_id: int) -> None:
     db_delete_entry(conn, entry_id)
 
 
-def get_all_entries(conn: sqlite3.Connection) -> tuple[int, list[dict[Any, Any]]]:
+def get_all_entries(conn: sqlite3.Connection) -> tuple[int, list[dict[Any, Any]] | list[Entry] | None]:
     """
     Get all entries with bowl weight.
 
