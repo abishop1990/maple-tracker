@@ -1,8 +1,8 @@
 # Maple Water Tracker
 
 [![Ubuntu](https://github.com/brittleru/maple-tracker/actions/workflows/tests.yml/badge.svg)](https://github.com/brittleru/maple-tracker/actions/workflows/tests.yml)
-[![Ruff Linter](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml/badge.svg?label=Ruff%20Linter)](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml)
-[![mypy Check](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml/badge.svg?label=mypy%20Check)](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml)
+[![Ruff Linter](https://github.com/brittleru/maple-tracker/actions/workflows/ruff-linter.yml/badge.svg)](https://github.com/brittleru/maple-tracker/actions/workflows/ruff-linter.yml)
+[![mypy Check](https://github.com/brittleru/maple-tracker/actions/workflows/mypy-check.yml/badge.svg)](https://github.com/brittleru/maple-tracker/actions/workflows/mypy-check.yml)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
