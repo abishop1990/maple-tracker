@@ -8,6 +8,7 @@ User=YOUR_USERNAME
 Group=YOUR_USERNAME
 WorkingDirectory=/home/YOUR_USERNAME/maple-tracker
 Environment="PATH=/home/YOUR_USERNAME/maple-tracker/venv/bin"
+Environment="FLASK_SECRET_KEY=YOUR_GENERATED_KEY"
 ExecStart=/home/YOUR_USERNAME/maple-tracker/venv/bin/gunicorn --bind 0.0.0.0:5000 --workers 2 "web.app:create_app()"
 Restart=always
 RestartSec=5

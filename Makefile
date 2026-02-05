@@ -8,7 +8,12 @@ install-dev:
 	python -m pip install -e ".[dev]"
 
 install-prod:
-	python -m pip install -e ".[prod]"
+	if [ -f requirements.lock ]; then \
+		python -m pip install -r requirements.lock; \
+		python -m pip install -e .; \
+	else \
+		python -m pip install -e ".[prod]"; \
+	fi
 
 install-all:
 	python -m pip install -e ".[all]"
