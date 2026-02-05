@@ -17,7 +17,7 @@ def daily_summary_to_csv(df: pd.DataFrame, save_dir: str | Path | None = None, c
     return daily_summary
 
 
-def plot_kitty_data(daily_summary: pd.DataFrame, save_dir: str | Path | None = None, cat_name: str = "Maple"):
+def plot_kitty_data(daily_summary: pd.DataFrame, save_dir: str | Path | None = None, cat_name: str = "Maple") -> None:
     plt.figure(figsize=(10, 6))
     date_labels = daily_summary["Date_dt"].dt.strftime("%d/%m")
     bars = plt.bar(date_labels, daily_summary["Drink_g"], color="#E8D4A8", edgecolor="#2C3E50", linewidth=1.2)
@@ -77,7 +77,7 @@ def time_period(hour: int) -> str:
         return "Night\n(23-5)"
 
 
-def plot_time_pie_chart(df: pd.DataFrame, save_dir: str | Path | None = None, cat_name: str = "Maple"):
+def plot_time_pie_chart(df: pd.DataFrame, save_dir: str | Path | None = None, cat_name: str = "Maple") -> None:
     df = df.copy()
     df["Hour"] = pd.to_datetime(df["Time"], format="%H:%M").dt.hour
     period_order = ["Morning\n(5-12)", "Afternoon\n(12-18)", "Evening\n(18-23)", "Night\n(23-5)"]

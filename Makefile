@@ -16,13 +16,14 @@ install-all:
 # Development
 lint:
 	ruff check .
+	ruff format --check .
 
 format:
 	ruff check --fix .
 	ruff format .
 
 type-check:
-	mypy database web
+	mypy database web runnable
 
 test:
 	pytest

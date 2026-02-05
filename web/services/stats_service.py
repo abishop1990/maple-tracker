@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TypedDict
+from typing import Any, TypedDict
 
 from database.compute_stats import compute_daily_totals, compute_time_of_day_breakdown, compute_summary_stats
 
@@ -13,10 +13,10 @@ class DailyTotal(TypedDict):
 class StatsResponse(TypedDict):
     daily: list[DailyTotal]
     periods: dict[str, int]
-    summary: dict
+    summary: dict[str, int | float]
 
 
-def compute_stats(entries: list[dict]) -> StatsResponse:
+def compute_stats(entries: list[dict[str, Any]]) -> StatsResponse:
     """
     Compute all statistics from entries.
 
@@ -40,7 +40,7 @@ def compute_stats(entries: list[dict]) -> StatsResponse:
 
 def _format_daily_totals(daily_totals: dict[str, int]) -> list[DailyTotal]:
     """Format daily totals with sortable keys."""
-    daily_list = []
+    daily_list: list[DailyTotal] = []
 
     for date, total in daily_totals.items():
         sort_key = _parse_date_for_sorting(date)

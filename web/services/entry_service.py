@@ -33,7 +33,7 @@ class NotFoundError(Exception):
 class EntryValidatorBase:
     """Shared constants and validation logic."""
 
-    MIN_WEIGHT = 0
+    MIN_WEIGHT = 10
     MAX_WEIGHT = 5000  # 5kg should cover any cat bowl
     MAX_NOTES_LENGTH = 500
 
@@ -116,7 +116,7 @@ class EntryInput(EntryValidatorBase):
     time: str | None = None
     drink_manual: int | None = None
     refill_to: int | None = None
-    notes: str = ""
+    notes: str | None = ""
     is_refill_only: bool = False
 
     @classmethod
@@ -131,6 +131,9 @@ class EntryInput(EntryValidatorBase):
         time = cls._parse_time(data.get("time"))
         notes = cls._parse_notes(data.get("notes", ""))
         is_refill_only = bool(data.get("is_refill_only", False))
+
+        if total_weight is None or total_weight < 0:
+            raise ValidationError("total_weight must be greater than 0")
 
         return cls(
             total_weight=total_weight,
@@ -245,6 +248,9 @@ def create_entry(conn: sqlite3.Connection, entry_input: EntryInput) -> EntryResu
         notes=entry_input.notes,
     )
 
+    if new_id is None:
+        raise RuntimeError(f"Entry with id {new_id} can't be created")
+
     return EntryResult(id=new_id, drink=drink, water_weight=water_weight)
 
 
@@ -311,7 +317,7 @@ def update_entry(conn: sqlite3.Connection, entry_id: int, update_input: EntryUpd
     )
 
 
-def get_entry(conn: sqlite3.Connection, entry_id: int) -> dict:
+def get_entry(conn: sqlite3.Connection, entry_id: int) -> dict[Any, Any]:
     """
     Get a single entry by ID.
 
@@ -330,7 +336,7 @@ def delete_entry(conn: sqlite3.Connection, entry_id: int) -> None:
     db_delete_entry(conn, entry_id)
 
 
-def get_all_entries(conn: sqlite3.Connection) -> tuple[int, list[dict]]:
+def get_all_entries(conn: sqlite3.Connection) -> tuple[int, list[dict[Any, Any]]]:
     """
     Get all entries with bowl weight.
 

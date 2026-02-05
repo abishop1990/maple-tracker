@@ -41,7 +41,10 @@ def parse_kitty_data(data: str) -> pd.DataFrame:
 
         segments = [s.strip() for s in data_part.split("|") if s.strip()]
         for seg in segments:
-            num = int(re.search(r"(\d+)", seg).group(1))
+            search_match = re.search(r"(\d+)", seg)
+            if search_match is None:
+                continue
+            num = int(search_match.group(1))
             if "total" in seg:
                 entry["Total_Weight_g"] = num
             elif "water" in seg:

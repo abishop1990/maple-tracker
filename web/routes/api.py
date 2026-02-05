@@ -1,5 +1,5 @@
 from database.db_operations import update_bowl_weight as db_update_bowl_weight, read_all_entries, SortOrder
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, g, Response
 
 from web.services.entry_service import (
     EntryInput,
@@ -19,14 +19,14 @@ api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
 @api_bp.route("/entries", methods=["GET"])
-def get_entries():
+def get_entries() -> Response:
     """Get all entries with bowl weight."""
     bowl_weight, entries = get_all_entries(g.db)
     return jsonify({"bowl_weight": bowl_weight, "entries": entries})
 
 
 @api_bp.route("/entries/<int:entry_id>", methods=["GET"])
-def get_entry_by_id(entry_id: int):
+def get_entry_by_id(entry_id: int) -> Response | tuple[Response, int]:
     """Get a single entry by ID."""
     if entry_id < 1:
         return jsonify({"success": False, "error": "Invalid entry ID"}), 400
@@ -41,7 +41,7 @@ def get_entry_by_id(entry_id: int):
 
 
 @api_bp.route("/entries", methods=["POST"])
-def add_entry():
+def add_entry() -> Response | tuple[Response, int]:
     """Add a new water tracking entry."""
     if not request.json:
         return jsonify({"error": "JSON body required"}), 400
@@ -64,7 +64,7 @@ def add_entry():
 
 
 @api_bp.route("/entries/<int:entry_id>", methods=["PUT"])
-def update_entry_endpoint(entry_id: int):
+def update_entry_endpoint(entry_id: int) -> Response | tuple[Response, int]:
     """Update an existing water tracking entry."""
     if entry_id < 1:
         return jsonify({"success": False, "error": "Invalid entry ID"}), 400
@@ -100,7 +100,7 @@ def update_entry_endpoint(entry_id: int):
 
 
 @api_bp.route("/entries/<int:entry_id>", methods=["DELETE"])
-def remove_entry(entry_id: int):
+def remove_entry(entry_id: int) -> Response | tuple[Response, int]:
     """Delete an entry by ID."""
     if entry_id < 1:
         return jsonify({"success": False, "error": "Invalid entry ID"}), 400
@@ -113,7 +113,7 @@ def remove_entry(entry_id: int):
 
 
 @api_bp.route("/bowl-weight", methods=["POST"])
-def update_bowl_weight():
+def update_bowl_weight() -> Response | tuple[Response, int]:
     """Update the bowl weight setting."""
     min_bowl_weight = 10
     max_bowl_weight = 2000
@@ -143,7 +143,7 @@ def update_bowl_weight():
 
 
 @api_bp.route("/stats", methods=["GET"])
-def get_stats():
+def get_stats() -> Response:
     """Get computed statistics for charts."""
     entries = read_all_entries(g.db, order=SortOrder.ASC)
     stats = compute_stats(entries)
@@ -151,7 +151,7 @@ def get_stats():
 
 
 @api_bp.route("/import-raw", methods=["POST"])
-def import_raw():
+def import_raw() -> Response | tuple[Response, int]:
     """Import data from raw text format."""
     if not request.json:
         return jsonify({"success": False, "error": "JSON body required"}), 400

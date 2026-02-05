@@ -49,7 +49,7 @@ def init_db(database_path: str | Path = PathManager.MAPLE_DATABASE_PATH) -> sqli
     return conn
 
 
-def import_to_db(conn, df: pd.DataFrame) -> int:
+def import_to_db(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
     """
     Takes a pandas DataFrame and inserts it into the SQLite database.
     Handles potential NaN/None for Refill_To_g

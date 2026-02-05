@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Any
 
 
 def calculate_drink_amount(current_water_weight: int, prev_entry: sqlite3.Row | None, bowl_weight: int) -> int:
@@ -6,23 +7,23 @@ def calculate_drink_amount(current_water_weight: int, prev_entry: sqlite3.Row | 
     if prev_entry is None:
         return 0
 
-    prev_water = prev_entry["water_weight"]
+    prev_water: int = prev_entry["water_weight"]
     if prev_entry["refill_to"]:
         prev_water = prev_entry["refill_to"] - bowl_weight
 
     return max(0, prev_water - current_water_weight)
 
 
-def compute_daily_totals(entries: list[dict]) -> dict[str, int]:
+def compute_daily_totals(entries: list[dict[str, Any]]) -> dict[str, int]:
     """Compute daily drinking totals from entries."""
-    daily = {}
+    daily: dict[str, int] = {}
     for entry in entries:
         date = entry["date"]
         daily[date] = daily.get(date, 0) + (entry.get("drink") or 0)
     return daily
 
 
-def compute_time_of_day_breakdown(entries: list[dict]) -> dict[str, int]:
+def compute_time_of_day_breakdown(entries: list[dict[str, Any]]) -> dict[str, int]:
     """Compute drinking totals by time of day."""
     periods = {"Morning (5-12)": 0, "Afternoon (12-18)": 0, "Evening (18-23)": 0, "Night (23-5)": 0}
     morning_start_hour = 5
@@ -48,7 +49,7 @@ def compute_time_of_day_breakdown(entries: list[dict]) -> dict[str, int]:
     return periods
 
 
-def compute_summary_stats(daily_totals: dict[str, int]) -> dict:
+def compute_summary_stats(daily_totals: dict[str, int]) -> dict[str, int | float]:
     """Compute summary statistics from daily totals."""
     daily_values = [v for v in daily_totals.values() if v > 0]
     if not daily_values:

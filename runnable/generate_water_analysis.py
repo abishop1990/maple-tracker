@@ -6,7 +6,7 @@ from database.data_parse import parse_kitty_data, read_raw_data
 from database.path_manager import PathManager
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Analyze data and generate plots and CSV summaries")
     parser.add_argument("--data-file", "-d", type=Path, required=True, help="Path to raw data file.")
     parser.add_argument("--save-dir", "-s", type=Path, default=PathManager.OUTPUT_DIR, help="Path to save outputs.")

@@ -5,7 +5,7 @@ main_bp = Blueprint("main", __name__)
 
 
 @main_bp.route("/")
-def index():
+def index() -> str:
     """Render main page with form and charts."""
     bowl_weight = read_bowl_weight(g.db)
     return render_template("index.html", bowl_weight=bowl_weight)

@@ -1,6 +1,7 @@
 import sqlite3
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 from database.import_data import Defaults, init_db, normalize_date, get_sql_query
 from database.path_manager import PathManager
@@ -30,20 +31,20 @@ def update_bowl_weight(conn: sqlite3.Connection, weight: int) -> None:
     conn.commit()
 
 
-def read_previous_entry(conn: sqlite3.Connection) -> sqlite3.Row | None:
+def read_previous_entry(conn: sqlite3.Connection) -> sqlite3.Row | Any:
     """Get the most recent entry."""
     cursor = conn.execute("SELECT * FROM entries ORDER BY date DESC, time DESC LIMIT 1")
     return cursor.fetchone()
 
 
-def read_entry_by_id(conn: sqlite3.Connection, entry_id: int) -> dict | None:
+def read_entry_by_id(conn: sqlite3.Connection, entry_id: int) -> dict[Any, Any] | None:
     """Get a single entry by ID."""
     cursor = conn.execute("SELECT * FROM entries WHERE id = ?", (entry_id,))
     row = cursor.fetchone()
     return dict(row) if row else None
 
 
-def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC) -> list[dict]:
+def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC) -> list[dict[Any, Any]]:
     """Get all entries, ordered by date and time."""
     order_sql = order.value
     cursor = conn.execute(f"SELECT * FROM entries ORDER BY date {order_sql}, time {order_sql}")
@@ -59,8 +60,8 @@ def create_entry(  # noqa: PLR0913
         water_weight: int,
         drink: int = 0,
         refill_to: int | None = None,
-        notes: str = "",
-) -> int:
+        notes: str | None = "",
+) -> int | None:
     # fmt: on
     """Add a new entry and return the new entry ID."""
     insert_sql = get_sql_query("insert_entry.sql")

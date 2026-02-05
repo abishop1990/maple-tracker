@@ -1,5 +1,5 @@
 from database.db_operations import read_bowl_weight, read_all_entries, SortOrder
-from flask import Blueprint, g, send_file
+from flask import Blueprint, g, send_file, Response
 
 from web.services.export_service import generate_csv_export, generate_vet_report, get_export_filename
 
@@ -7,7 +7,7 @@ export_bp = Blueprint("export", __name__, url_prefix="/export")
 
 
 @export_bp.route("/csv")
-def export_csv():
+def export_csv() -> Response | tuple[str, int]:
     """Export all data as CSV."""
     entries = read_all_entries(g.db, order=SortOrder.ASC)
 
@@ -26,7 +26,7 @@ def export_csv():
 
 
 @export_bp.route("/vet-report")
-def export_vet_report():
+def export_vet_report() -> Response | tuple[str, int]:
     """Export formatted report for veterinarian."""
     entries = read_all_entries(g.db, order=SortOrder.ASC)
 

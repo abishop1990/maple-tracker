@@ -1,8 +1,10 @@
 import sqlite3
+from typing import Any
 
 import pandas as pd
 from database.data_parse import parse_kitty_data
 from database.db_operations import read_bowl_weight, create_entry
+from pandas.core.generic import NDFrame
 
 
 def import_raw_text(conn: sqlite3.Connection, raw_text: str) -> int:
@@ -49,7 +51,7 @@ def import_raw_text(conn: sqlite3.Connection, raw_text: str) -> int:
     return imported
 
 
-def _is_nan(value) -> bool:
+def _is_nan(value: int | float | Any) -> bool | NDFrame:
     """Check if value is NaN (works with pandas NaN and None)."""
     try:
         return pd.isna(value)
