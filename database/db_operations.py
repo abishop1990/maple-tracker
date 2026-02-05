@@ -45,7 +45,11 @@ def read_entry_by_id(conn: sqlite3.Connection, entry_id: int) -> Entry | dict[An
     return dict(row) if row else None
 
 
-def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC) -> list[dict[Any, Any]] | list[Entry] | None:
+# fmt: off
+def read_all_entries(
+        conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC
+) -> list[dict[Any, Any]] | list[Entry] | None:
+    # fmt: on
     """Get all entries, ordered by date and time."""
     order_sql = order.value
     cursor = conn.execute(f"SELECT * FROM entries ORDER BY date {order_sql}, time {order_sql}")

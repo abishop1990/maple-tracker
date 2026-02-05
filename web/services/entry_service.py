@@ -1,11 +1,9 @@
 import re
 import sqlite3
-from _typeshed import SupportsTrunc
 from dataclasses import dataclass
 from datetime import datetime
-from typing import SupportsInt, Any, SupportsIndex
+from typing import Any
 
-from typing_extensions import Buffer
 
 from database.compute_stats import calculate_drink_amount
 from database.db_operations import (
