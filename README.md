@@ -1,5 +1,11 @@
 # Maple Water Tracker
 
+[![Ubuntu](https://github.com/brittleru/maple-tracker/actions/workflows/tests.yml/badge.svg)](https://github.com/brittleru/maple-tracker/actions/workflows/tests.yml)
+[![Ruff Linter](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml/badge.svg?label=Ruff%20Linter)](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml)
+[![mypy Check](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml/badge.svg?label=mypy%20Check)](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 A local Flask web app to track your cat's water intake, with a warm ginger-and-charcoal color scheme 
 inspired by Maple's beautiful calico coat!
 

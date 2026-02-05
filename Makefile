@@ -23,7 +23,7 @@ format:
 	ruff format .
 
 type-check:
-	mypy database web runnable
+	mypy .
 
 test:
 	pytest
