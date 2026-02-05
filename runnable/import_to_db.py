@@ -6,7 +6,7 @@ from database.import_data import init_db, import_to_db
 from database.path_manager import PathManager
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Import raw data to SQLite database.")
     parser.add_argument("--data-file", "-d", type=Path, required=True, help="Path to raw data file.")
     parser.add_argument("--cat-name", "-n", type=str, default="Maple", help="Cat name representing the database file.")

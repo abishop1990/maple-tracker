@@ -1,2 +1,11 @@
+# Core
 -r requirements.txt
+
+# Development tools
 ruff>=0.15
+pytest>=9.0
+pytest-cov>=7.0
+mypy>=1.19
+
+# Production server
+gunicorn>=25.0.0

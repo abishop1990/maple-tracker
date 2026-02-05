@@ -21,25 +21,30 @@ def parse_kitty_data(data: str) -> pd.DataFrame:
     """
     lines = data.strip().split("\n")
     parsed_data = []
-
+    date_split_len = 2
     for line in lines:
-        line = line.strip()
+        line = line.strip()  # noqa: PLW2901
         if not line or "Bowl has" in line:
             continue
 
         parts = line.split("->")
-        if len(parts) < 2:
+        if len(parts) < date_split_len:
             continue
 
         timestamp_str = parts[0].strip()
         data_part = parts[1].strip()
+        print(f"Timestamp: {timestamp_str}")
+        print(f"Data part: {data_part}")
         date_str, time_str = timestamp_str.split(" - ")
 
         entry = {"Date": date_str, "Time": time_str, "Drink_g": 0}
 
         segments = [s.strip() for s in data_part.split("|") if s.strip()]
         for seg in segments:
-            num = int(re.search(r"(\d+)", seg).group(1))
+            search_match = re.search(r"(\d+)", seg)
+            if search_match is None:
+                continue
+            num = int(search_match.group(1))
             if "total" in seg:
                 entry["Total_Weight_g"] = num
             elif "water" in seg:

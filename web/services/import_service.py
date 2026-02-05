@@ -50,9 +50,9 @@ def import_raw_text(conn: sqlite3.Connection, raw_text: str) -> int:
     return imported
 
 
-def _is_nan(value) -> bool:
+def _is_nan(value: int | float | object) -> bool:
     """Check if value is NaN (works with pandas NaN and None)."""
     try:
-        return pd.isna(value)
+        return bool(pd.isna(value))
     except (ImportError, TypeError):
         return value is None

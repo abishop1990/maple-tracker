@@ -1,5 +1,11 @@
 # Maple Water Tracker
 
+[![Ubuntu](https://github.com/brittleru/maple-tracker/actions/workflows/tests.yml/badge.svg)](https://github.com/brittleru/maple-tracker/actions/workflows/tests.yml)
+[![Ruff Linter](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml/badge.svg?label=Ruff%20Linter)](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml)
+[![mypy Check](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml/badge.svg?label=mypy%20Check)](https://github.com/brittleru/maple-tracker/actions/workflows/code-quality.yml)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 A local Flask web app to track your cat's water intake, with a warm ginger-and-charcoal color scheme 
 inspired by Maple's beautiful calico coat!
 
@@ -28,23 +34,25 @@ Designed for use on your home network so multiple family members can log data fr
 ## Setup
 
 ### 1. Install Python dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Or install manually:
-```bash
-pip install flask pandas matplotlib
-```
-
 For development or production:
 ```bash
+# Requirements for development only
+python -m pip install -e ".[dev]"
+
 # Requirements for production only
 python -m pip install -e ".[prod]"
 
 # Requirements with development tools and production dependencies 
 python -m pip install -e ".[all]"
+```
+
+Via `requirements.txt`
+```bash
+# Minimum requirements
+python -m pip install -r requirements.txt
+
+# Development and deployment requirements
+python -m pip install -r requirements-dev.txt
 ```
 
 #### 1.1 Import your existing data (optional)
@@ -53,10 +61,20 @@ If you have existing data in raw text format:
 python runnable/import_to_db.py --data-file=data-raw.txt --cat-name="Maple"
 ```
 
+Or use via project script (if installed via `python -m pip install -e`):
+```bash
+maple-import --data-file=data-raw.txt --cat-name="Maple"
+```
+
 ### 2. Run the app
 
 ```bash
 python web/app.py
+```
+
+Or use via project script (if installed via `python -m pip install -e`):
+```bash
+maple-tracker
 ```
 
 ### 3. Access the app
@@ -101,7 +119,6 @@ Click "Export for Vet" and choose:
 - **Full Data:** Complete CSV with all entries
 
 ## Data Storage
-
 
 Data is stored in `maple.db` (SQLite). To backup:
 

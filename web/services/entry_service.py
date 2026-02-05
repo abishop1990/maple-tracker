@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
+
 from database.compute_stats import calculate_drink_amount
 from database.db_operations import (
     read_bowl_weight,
@@ -12,28 +13,34 @@ from database.db_operations import (
     create_entry as db_create_entry,
     update_entry_by_id as db_update_entry,
     delete_entry_by_id as db_delete_entry,
-    read_all_entries, SortOrder,
+    read_all_entries,
+    SortOrder,
 )
+from database.types import Entry
 
 
 class ValidationError(ValueError):
     """Raised when input validation fails."""
+
     pass
 
 
 class NotFoundError(Exception):
     """Raised when a requested resource is not found."""
+
     pass
+
 
 @dataclass
 class EntryValidatorBase:
     """Shared constants and validation logic."""
-    MIN_WEIGHT = 0
-    MAX_WEIGHT = 5000 # 5kg should cover any cat bowl
+
+    MIN_WEIGHT = 10
+    MAX_WEIGHT = 5000  # 5kg should cover any cat bowl
     MAX_NOTES_LENGTH = 500
 
     @classmethod
-    def _validate_base_dict(cls, data: Any) -> dict[str, Any]:
+    def _validate_base_dict(cls, data: object) -> dict[str, object]:
         if data is None:
             raise ValidationError("Request body is required")
         if not isinstance(data, dict):
@@ -48,15 +55,15 @@ class EntryValidatorBase:
             return None
         try:
             weight = int(value)
-        except (ValueError, TypeError):
-            raise ValidationError(f"{name} must be a valid number")
+        except (ValueError, TypeError) as exc:
+            raise ValidationError(f"{name} must be a valid number") from exc
 
         if not cls.MIN_WEIGHT <= weight <= cls.MAX_WEIGHT:
             raise ValidationError(f"{name} must be between {cls.MIN_WEIGHT} and {cls.MAX_WEIGHT}")
         return weight
 
     @classmethod
-    def _parse_date(cls, value: Any) -> str | None:
+    def _parse_date(cls, value: str | object) -> str | None:
         """Validate and parse a date value."""
         if value is None or value == "":
             return None
@@ -68,12 +75,12 @@ class EntryValidatorBase:
 
         try:
             datetime.strptime(value, "%Y-%m-%d")
-        except ValueError:
-            raise ValidationError("date is not a valid calendar date")
+        except ValueError as exc:
+            raise ValidationError("date is not a valid calendar date") from exc
         return value
 
     @classmethod
-    def _parse_time(cls, value: Any) -> str | None:
+    def _parse_time(cls, value: str | object) -> str | None:
         """Validate and parse a time value."""
         if value is None or value == "":
             return None
@@ -85,12 +92,12 @@ class EntryValidatorBase:
 
         try:
             datetime.strptime(value, "%H:%M")
-        except ValueError:
-            raise ValidationError("time is not a valid time")
+        except ValueError as exc:
+            raise ValidationError("time is not a valid time") from exc
         return value
 
     @classmethod
-    def _parse_notes(cls, value: Any, required: bool = False) -> str | None:
+    def _parse_notes(cls, value: str | object, required: bool = False) -> str | None:
         """Validate and parse notes."""
         if value is None:
             return "" if required else None
@@ -101,19 +108,21 @@ class EntryValidatorBase:
             raise ValidationError(f"notes must be {cls.MAX_NOTES_LENGTH} characters or less")
         return value.strip()
 
+
 @dataclass
 class EntryInput(EntryValidatorBase):
     """Validated input for creating an entry."""
+
     total_weight: int
     date: str | None = None
     time: str | None = None
     drink_manual: int | None = None
     refill_to: int | None = None
-    notes: str = ""
+    notes: str | None = ""
     is_refill_only: bool = False
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "EntryInput":
+    def from_dict(cls, data: object) -> "EntryInput":
         """Create EntryInput from request data with validation."""
         data = cls._validate_base_dict(data)
 
@@ -124,6 +133,9 @@ class EntryInput(EntryValidatorBase):
         time = cls._parse_time(data.get("time"))
         notes = cls._parse_notes(data.get("notes", ""))
         is_refill_only = bool(data.get("is_refill_only", False))
+
+        if total_weight is None or total_weight < 0:
+            raise ValidationError("total_weight must be greater than 0")
 
         return cls(
             total_weight=total_weight,
@@ -139,6 +151,7 @@ class EntryInput(EntryValidatorBase):
 @dataclass
 class EntryUpdateInput(EntryValidatorBase):
     """Validated input for updating an entry."""
+
     total_weight: int | None = None
     date: str | None = None
     time: str | None = None
@@ -147,7 +160,7 @@ class EntryUpdateInput(EntryValidatorBase):
     notes: str | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "EntryUpdateInput":
+    def from_dict(cls, data: object) -> "EntryUpdateInput":
         """Create EntryUpdateInput from request data with validation."""
         data = cls._validate_base_dict(data)
 
@@ -169,26 +182,31 @@ class EntryUpdateInput(EntryValidatorBase):
 
     def has_updates(self) -> bool:
         """Check if any field has an update value."""
-        return any([
-            self.total_weight is not None,
-            self.date is not None,
-            self.time is not None,
-            self.drink is not None,
-            self.refill_to is not None,
-            self.notes is not None,
-        ])
+        return any(
+            [
+                self.total_weight is not None,
+                self.date is not None,
+                self.time is not None,
+                self.drink is not None,
+                self.refill_to is not None,
+                self.notes is not None,
+            ]
+        )
 
 
 @dataclass
 class EntryResult:
     """Result of creating an entry."""
+
     id: int
     drink: int
     water_weight: int
 
+
 @dataclass
 class EntryUpdateResult:
     """Result of updating an entry."""
+
     id: int
     date: str
     time: str
@@ -197,6 +215,7 @@ class EntryUpdateResult:
     drink: int
     refill_to: int | None
     notes: str
+
 
 def create_entry(conn: sqlite3.Connection, entry_input: EntryInput) -> EntryResult:
     """
@@ -231,7 +250,11 @@ def create_entry(conn: sqlite3.Connection, entry_input: EntryInput) -> EntryResu
         notes=entry_input.notes,
     )
 
+    if new_id is None:
+        raise RuntimeError(f"Entry with id {new_id} can't be created")
+
     return EntryResult(id=new_id, drink=drink, water_weight=water_weight)
+
 
 def update_entry(conn: sqlite3.Connection, entry_id: int, update_input: EntryUpdateInput) -> EntryUpdateResult:
     """
@@ -296,7 +319,7 @@ def update_entry(conn: sqlite3.Connection, entry_id: int, update_input: EntryUpd
     )
 
 
-def get_entry(conn: sqlite3.Connection, entry_id: int) -> dict:
+def get_entry(conn: sqlite3.Connection, entry_id: int) -> Entry | dict[Any, Any]:
     """
     Get a single entry by ID.
 
@@ -315,7 +338,7 @@ def delete_entry(conn: sqlite3.Connection, entry_id: int) -> None:
     db_delete_entry(conn, entry_id)
 
 
-def get_all_entries(conn: sqlite3.Connection) -> tuple[int, list[dict]]:
+def get_all_entries(conn: sqlite3.Connection) -> tuple[int, list[dict[Any, Any]] | list[Entry] | None]:
     """
     Get all entries with bowl weight.
 

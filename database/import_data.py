@@ -3,7 +3,6 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-
 from database.path_manager import PathManager
 
 
@@ -50,7 +49,7 @@ def init_db(database_path: str | Path = PathManager.MAPLE_DATABASE_PATH) -> sqli
     return conn
 
 
-def import_to_db(conn, df: pd.DataFrame) -> int:
+def import_to_db(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
     """
     Takes a pandas DataFrame and inserts it into the SQLite database.
     Handles potential NaN/None for Refill_To_g
@@ -63,15 +62,18 @@ def import_to_db(conn, df: pd.DataFrame) -> int:
             refill = int(row.Refill_To_g) if hasattr(row, "Refill_To_g") and not pd.isna(row.Refill_To_g) else None
             normalized_date = normalize_date(row.Date)
 
-            conn.execute(insert_sql, (
-                normalized_date,
-                row.Time,
-                getattr(row, "Total_Weight_g", 0),
-                getattr(row, "Water_Weight_g", 0),
-                row.Drink_g,
-                refill,
-                ""
-            ))
+            conn.execute(
+                insert_sql,
+                (
+                    normalized_date,
+                    row.Time,
+                    getattr(row, "Total_Weight_g", 0),
+                    getattr(row, "Water_Weight_g", 0),
+                    row.Drink_g,
+                    refill,
+                    "",
+                ),
+            )
             imported += 1
             print(f"\t{normalized_date} {row.Time} - {row.Drink_g}g drink")
         except Exception as e:

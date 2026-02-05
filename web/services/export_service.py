@@ -1,12 +1,14 @@
 import io
 from datetime import datetime
+from typing import Any
 
 import pandas as pd
 
 from database.compute_stats import compute_daily_totals
+from database.types import Entry
 
 
-def generate_csv_export(entries: list[dict]) -> io.BytesIO:
+def generate_csv_export(entries: list[Entry] | list[dict[Any, Any]]) -> io.BytesIO:
     """
     Generate CSV export from entries.
 
@@ -23,7 +25,7 @@ def generate_csv_export(entries: list[dict]) -> io.BytesIO:
     return bytes_output
 
 
-def generate_vet_report(entries: list[dict], bowl_weight: int) -> io.BytesIO:
+def generate_vet_report(entries: list[Entry] | list[dict[Any, Any]], bowl_weight: int) -> io.BytesIO:
     """
     Generate formatted vet report from entries.
 
@@ -44,21 +46,23 @@ def generate_vet_report(entries: list[dict], bowl_weight: int) -> io.BytesIO:
     return output
 
 
+# fmt: off
 def _build_report_header(
-        entries: list[dict],
+        entries: list[Entry] | list[dict[Any, Any]],
         daily_totals: dict[str, int],
         bowl_weight: int,
         avg: float,
         daily_values: list[int],
 ) -> str:
+    # fmt: on
     """Build the report header section."""
     return f"""MAPLE - WATER INTAKE REPORT
-Generated: {datetime.now().strftime('%Y/%m/%d %H:%M')}
-{'=' * 50}
+Generated: {datetime.now().strftime("%Y/%m/%d %H:%M")}
+{"=" * 50}
 
 SUMMARY
-{'-' * 50}
-Tracking Period: {entries[0]['date']} to {entries[-1]['date']}
+{"-" * 50}
+Tracking Period: {entries[0]["date"]} to {entries[-1]["date"]}
 Total Days Tracked: {len(daily_totals)}
 Total Measurements: {len(entries)}
 Bowl Weight: {bowl_weight}g
@@ -81,7 +85,7 @@ def _build_daily_breakdown(daily_totals: dict[str, int]) -> str:
     return "\n".join(lines)
 
 
-def _build_detailed_log(entries: list[dict]) -> str:
+def _build_detailed_log(entries: list[Entry] | list[dict[Any, Any]]) -> str:
     """Build the detailed log section."""
     lines = ["DETAILED LOG (Raw Data)", "-" * 50]
 
@@ -93,9 +97,9 @@ def _build_detailed_log(entries: list[dict]) -> str:
             f"{entry.get('drink') or 0}g drink"
         )
 
-        if entry.get('refill_to'):
+        if entry.get("refill_to"):
             line += f" | {entry['refill_to']}g refill"
-        if entry.get('notes'):
+        if entry.get("notes"):
             line += f" | Notes: {entry['notes']}"
 
         lines.append(line)
@@ -113,5 +117,5 @@ def _safe_parse_date(date_str: str) -> str:
 
 def get_export_filename(prefix: str, extension: str) -> str:
     """Generate timestamped export filename."""
-    timestamp = datetime.now().strftime('%Y%m%d')
+    timestamp = datetime.now().strftime("%Y%m%d")
     return f"{prefix}_{timestamp}.{extension}"
