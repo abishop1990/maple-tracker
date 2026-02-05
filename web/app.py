@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from pathlib import Path
 from typing import Any
@@ -37,6 +38,8 @@ def create_app(database_path: str | Path | None = None) -> Flask:
     """
     app = Flask(__name__)
 
+    app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-key-do-not-use-in-prod")
+    print(app.secret_key)
     app.config["DATABASE"] = database_path if database_path is not None else PathManager.MAPLE_DATABASE_PATH
 
     _register_db_handlers(app)

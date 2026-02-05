@@ -17,6 +17,10 @@ cd maple-tracker
 # 2. Create virtual environment and install
 python3 -m venv venv
 source venv/bin/activate
+
+# Prefer to use requirements.lock for production. Use either:
+make install-prod
+# Or use pyproject.toml with possible updated features:
 python -m pip install -e ".[prod]"
 
 # 3. Initialize the database
@@ -25,6 +29,10 @@ python -c "from database.db_operations import init_database; init_database()"
 # 4. Edit the service file 
 # (replace YOUR_USERNAME with your actual username and where you cloned the repo)
 sed -i "s/YOUR_USERNAME/$USER/g" maple-tracker.service
+
+# replace YOUR_GENERATED_KEY from Environment with your generated secret key
+# You can generate it with this command:
+python -c 'import secrets; print(secrets.token_hex(32))'
 
 # 5. Install and start the service
 sudo cp maple-tracker.service /etc/systemd/system/
