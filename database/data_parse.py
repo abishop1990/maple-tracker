@@ -33,6 +33,8 @@ def parse_kitty_data(data: str) -> pd.DataFrame:
 
         timestamp_str = parts[0].strip()
         data_part = parts[1].strip()
+        print(f"Timestamp: {timestamp_str}")
+        print(f"Data part: {data_part}")
         date_str, time_str = timestamp_str.split(" - ")
 
         entry = {"Date": date_str, "Time": time_str, "Drink_g": 0}

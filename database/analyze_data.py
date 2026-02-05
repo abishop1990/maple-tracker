@@ -93,7 +93,7 @@ def plot_time_pie_chart(df: pd.DataFrame, save_dir: str | Path | None = None, ca
 
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    _, _, autotexts = ax.pie(
+    _wedges, _texts, autotexts = ax.pie(
         values,
         labels=labels,
         colors=chart_colors,

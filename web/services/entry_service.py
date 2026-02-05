@@ -19,11 +19,13 @@ from database.db_operations import (
 
 class ValidationError(ValueError):
     """Raised when input validation fails."""
+
     pass
 
 
 class NotFoundError(Exception):
     """Raised when a requested resource is not found."""
+
     pass
 
 

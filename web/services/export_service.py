@@ -43,6 +43,7 @@ def generate_vet_report(entries: list[dict], bowl_weight: int) -> io.BytesIO:
     return output
 
 
+# fmt: off
 def _build_report_header(
         entries: list[dict],
         daily_totals: dict[str, int],
@@ -50,6 +51,7 @@ def _build_report_header(
         avg: float,
         daily_values: list[int],
 ) -> str:
+    # fmt: on
     """Build the report header section."""
     return f"""MAPLE - WATER INTAKE REPORT
 Generated: {datetime.now().strftime("%Y/%m/%d %H:%M")}

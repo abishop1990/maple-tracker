@@ -16,7 +16,7 @@ class TestDataParseIntegration(unittest.TestCase):
                 Maple had three entries: 0g (implied), 43g measured at 14:13 and 17g measured at 22:16.
             5. Verify sorting (latest date should be at the end)
         """
-        raw_path = PathManager.MAPLE_RAW_DATA_PATH
+        raw_path = PathManager.TEST_RESOURCES_DIR / "raw-data.txt"
         self.assertTrue(raw_path.exists(), f"Raw data file not found at {raw_path}")
         raw_text = read_raw_data(raw_path)
 

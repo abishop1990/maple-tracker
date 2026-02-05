@@ -50,6 +50,7 @@ def read_all_entries(conn: sqlite3.Connection, order: SortOrder = SortOrder.ASC)
     return [dict(row) for row in cursor.fetchall()]
 
 
+# fmt: off
 def create_entry(  # noqa: PLR0913
         conn: sqlite3.Connection,
         date: str,
@@ -60,6 +61,7 @@ def create_entry(  # noqa: PLR0913
         refill_to: int | None = None,
         notes: str = "",
 ) -> int:
+    # fmt: on
     """Add a new entry and return the new entry ID."""
     insert_sql = get_sql_query("insert_entry.sql")
     db_date = normalize_date(date)
@@ -69,6 +71,7 @@ def create_entry(  # noqa: PLR0913
     return cursor.lastrowid
 
 
+# fmt: off
 def update_entry_by_id(  # noqa: PLR0913
         conn: sqlite3.Connection,
         entry_id: int,
@@ -80,6 +83,7 @@ def update_entry_by_id(  # noqa: PLR0913
         refill_to: int | None = None,
         notes: str = "",
 ) -> bool:
+    # fmt: on
     """
     Update an existing entry by ID.
 
