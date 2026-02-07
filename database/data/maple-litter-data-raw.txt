@@ -12,3 +12,5 @@
 2026-02-07 - 11:07 -> 2220g mass | 103s time-spent
 2026-02-07 - 13:02 -> 2190g mass | 216s time-spent
 2026-02-07 - 15:41 -> 2130g mass |  55s time-spent
+2026-02-07 - 16:52 -> 2150g mass |  35s time-spent
+2026-02-07 - 21:35 -> 2180g mass |  43s time-spent
