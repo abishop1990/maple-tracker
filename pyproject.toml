@@ -70,7 +70,7 @@ warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_defs = true
-exclude = ["tests", "venv"]
+exclude = ["tests", "venv", "env", ".venv", ".env"]
 strict = true
 
 [[tool.mypy.overrides]]

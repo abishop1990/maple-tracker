@@ -16,3 +16,7 @@ Bowl has 423g
 2026-02-04 - 11:48 -> 548g total | 125g water |  4g drink
 2026-02-04 - 15:15 -> 545g total | 122g water |  3g drink | 660g refill
 2026-02-05 - 01:12 -> 650g total | 227g water | 10g drink
+2026-02-05 - 15:56 -> 632g total | 209g water | 18g drink
+2026-02-06 - 09:38 -> 609g total | 186g water | 23g drink | 585g refill
+2026-02-06 - 18:48 -> 563g total | 140g water | 22g drink
+2026-02-07 - 15:35 -> 543g total | 120g water | 20g drink | 573g refill

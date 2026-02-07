@@ -1,0 +1,14 @@
+2026-02-06 - 10:16 -> 2310g mass | 209s time-spent
+2026-02-06 - 10:43 -> 2280g mass |  55s time-spent
+2026-02-06 - 11:19 -> 2270g mass |  50s time-spent
+2026-02-06 - 12:40 -> 2260g mass |  31s time-spent
+2026-02-06 - 13:23 -> 2270g mass |  30s time-spent
+2026-02-06 - 14:44 -> 2240g mass |  56s time-spent
+2026-02-06 - 21:38 -> 2250g mass |  55s time-spent
+2026-02-06 - 21:57 -> 2260g mass |  69s time-spent
+2026-02-07 - 00:19 -> 2230g mass |  74s time-spent
+2026-02-07 - 08:28 -> 2200g mass |  78s time-spent
+2026-02-07 - 09:12 -> 2190g mass |  70s time-spent
+2026-02-07 - 11:07 -> 2220g mass | 103s time-spent
+2026-02-07 - 13:02 -> 2190g mass | 216s time-spent
+2026-02-07 - 15:41 -> 2130g mass |  55s time-spent
