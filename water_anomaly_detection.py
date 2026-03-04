@@ -1,22 +1,13 @@
-"""
-Water Intake Anomaly Detection for Cats
-Detects unusual water intake patterns indicating potential health issues
-"""
-
+"""Water Intake Anomaly Detection for Cats"""
 from typing import List, Dict, Any
-from datetime import datetime, timedelta
-
 
 class WaterIntakeAnalyzer:
     """Analyzes cat water intake for health anomalies"""
     
-    # Normal cat water intake: 40-60 mL/kg/day
     NORMAL_MIN_ML_PER_KG = 40
     NORMAL_MAX_ML_PER_KG = 60
-    
-    # Concerning thresholds
-    HIGH_INTAKE_THRESHOLD = 80  # mL/kg/day = possible diabetes/hyperthyroidism
-    LOW_INTAKE_THRESHOLD = 30   # mL/kg/day = possible dehydration
+    HIGH_INTAKE_THRESHOLD = 80
+    LOW_INTAKE_THRESHOLD = 30
     
     def __init__(self, cat_weight_kg: float):
         self.cat_weight_kg = cat_weight_kg
@@ -27,23 +18,25 @@ class WaterIntakeAnalyzer:
         """Analyze single day's water intake"""
         per_kg = water_ml / self.cat_weight_kg if self.cat_weight_kg > 0 else 0
         
+        # Initialize all fields
         alert = None
         severity = None
+        recommendation = "Continue monitoring water intake."
         
         if per_kg > self.HIGH_INTAKE_THRESHOLD:
-            alert = f"High water intake: {water_ml:.0f}mL ({per_kg:.1f}mL/kg)"
+            alert = f"HIGH: {water_ml:.0f}mL ({per_kg:.1f}mL/kg)"
             severity = "HIGH"
             recommendation = "Contact vet immediately. May indicate diabetes or hyperthyroidism."
         elif water_ml > self.normal_daily_max * 1.3:
-            alert = f"Elevated water intake: {water_ml:.0f}mL"
+            alert = f"ELEVATED: {water_ml:.0f}mL"
             severity = "MEDIUM"
             recommendation = "Monitor closely. Watch for other symptoms."
         elif per_kg < self.LOW_INTAKE_THRESHOLD:
-            alert = f"Low water intake: {water_ml:.0f}mL ({per_kg:.1f}mL/kg)"
+            alert = f"LOW: {water_ml:.0f}mL ({per_kg:.1f}mL/kg)"
             severity = "MEDIUM"
             recommendation = "Ensure fresh water available. Monitor for dehydration."
         elif water_ml < self.normal_daily_min * 0.7:
-            alert = f"Significantly low intake: {water_ml:.0f}mL"
+            alert = f"CRITICALLY LOW: {water_ml:.0f}mL"
             severity = "HIGH"
             recommendation = "Contact vet. May indicate kidney issues or dehydration."
         
@@ -71,7 +64,6 @@ class WaterIntakeAnalyzer:
         trend_alert = None
         trend_type = None
         
-        # Check for increasing trend (last 7 days vs previous)
         if len(intakes) >= 14:
             recent_7 = intakes[-7:]
             previous_7 = intakes[-14:-7]
@@ -79,14 +71,15 @@ class WaterIntakeAnalyzer:
             recent_avg = sum(recent_7) / len(recent_7)
             previous_avg = sum(previous_7) / len(previous_7)
             
-            increase_percent = ((recent_avg - previous_avg) / previous_avg) * 100
-            
-            if increase_percent > 25:
-                trend_alert = f"Water intake up {increase_percent:.1f}% in last week"
-                trend_type = "INCREASING"
-            elif increase_percent < -25:
-                trend_alert = f"Water intake down {increase_percent:.1f}% in last week"
-                trend_type = "DECREASING"
+            if previous_avg > 0:
+                increase_percent = ((recent_avg - previous_avg) / previous_avg) * 100
+                
+                if increase_percent > 25:
+                    trend_alert = f"INCREASING: +{increase_percent:.1f}% in last week"
+                    trend_type = "INCREASING"
+                elif increase_percent < -25:
+                    trend_alert = f"DECREASING: {increase_percent:.1f}% in last week"
+                    trend_type = "DECREASING"
         
         return {
             "status": "analyzed",
@@ -98,12 +91,12 @@ class WaterIntakeAnalyzer:
     
     def get_health_recommendations(self, daily_intake: float) -> List[str]:
         """Get vet-friendly health recommendations"""
-        per_kg = daily_intake / self.cat_weight_kg
+        per_kg = daily_intake / self.cat_weight_kg if self.cat_weight_kg > 0 else 0
         recommendations = []
         
         if per_kg > 80:
             recommendations.extend([
-                "Contact veterinarian immediately",
+                "🔴 Contact veterinarian immediately",
                 "Screen for diabetes (elevated blood glucose)",
                 "Screen for hyperthyroidism (TSH levels)",
                 "Check kidney function (BUN, creatinine)",
@@ -116,7 +109,7 @@ class WaterIntakeAnalyzer:
             ])
         elif per_kg < 30:
             recommendations.extend([
-                "Contact veterinarian",
+                "🔴 Contact veterinarian",
                 "Check for kidney disease",
                 "Assess for dehydration",
                 "Ensure water bowl accessibility",
@@ -128,22 +121,6 @@ class WaterIntakeAnalyzer:
                 "Add water bowls in multiple locations",
             ])
         else:
-            recommendations.append("Water intake appears normal. Continue monitoring.")
+            recommendations.append("✅ Water intake appears normal. Continue monitoring.")
         
         return recommendations
-
-
-# Example usage
-if __name__ == "__main__":
-    analyzer = WaterIntakeAnalyzer(cat_weight_kg=4.5)
-    
-    # Test daily intakes
-    test_intakes = [
-        150, 160, 155,  # Normal
-        200, 220,        # High
-        100,             # Low
-    ]
-    
-    for intake in test_intakes:
-        result = analyzer.analyze_daily_intake(intake)
-        print(f"{intake}mL: {result['status']} - {result.get('alert', 'Normal')}")
